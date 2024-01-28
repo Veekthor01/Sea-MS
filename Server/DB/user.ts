@@ -1,8 +1,11 @@
 import connectDB from "./db";
 import { ObjectId } from "mongodb";
-//import { InsertOneResult } from 'mongodb';
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+dotenv.config();
 
 interface User {
+    _id?: ObjectId;
     username: string;
     password: string;
 }
@@ -52,8 +55,75 @@ async function getUserByUsername(username: string): Promise<User | null> {
     }
 }
 
+// Function to store the refresh token in the database
+async function storeRefreshToken(refreshToken: string, userId: string) {
+    try {
+        const db = await connectDB();
+        if (!db) {
+            throw new Error('Database not connected');
+        }
+        await db.collection('user').updateOne({ _id: new ObjectId(userId) }, { $set: { refreshToken } });
+    } catch (err) {
+        console.log('Database Error', err);
+        throw err;
+    }
+}
+
+// Function to validate the refresh token
+async function validateRefreshToken(refreshToken: string) {
+    try {
+        const db = await connectDB();
+        if (!db) {
+            throw new Error('Database not connected');
+        }
+        const user: User | null = await db.collection('user').findOne({ refreshToken }) as User | null;
+        if (!user) {
+            return null;
+        }
+        // Verify the refresh token
+        jwt.verify(refreshToken, process.env.JWT_REFRESH as string);
+        return user._id;
+    } catch (err) {
+        console.log('Database Error', err);
+        throw err;
+    }
+}
+
+    // Function to delete the refresh token(for logging out)
+    async function deleteRefreshToken(userId: string) {
+        try {
+            const db = await connectDB();
+            if (!db) {
+                throw new Error('Database not connected');
+            }
+            const result = await db.collection('user').updateOne({ _id: new ObjectId(userId) }, { $unset: { refreshToken: '' } });
+            return result.modifiedCount > 0;
+        } catch (err) {
+            console.log('Database Error', err);
+            throw err;
+        }
+    } // Deleting based on the User's ID logs the user out of all devices
+
+   /* // Deleting based on the Refresh Token itself logs the user out of the current device only
+   async function deleteRefreshToken(refreshToken: string) {
+    try {
+        const db = await connectDB();
+        if (!db) {
+            throw new Error('Database not connected');
+        }
+        const result = await db.collection('user').updateOne({ refreshToken }, { $unset: { refreshToken: '' } });
+        return result.modifiedCount > 0;
+    } catch (err) {
+        console.log('Database Error', err);
+        throw err;
+    }
+} */
+
 export {
     createUser,
     getUserById,
-    getUserByUsername
+    getUserByUsername,
+    storeRefreshToken,
+    validateRefreshToken,
+    deleteRefreshToken,
 }
