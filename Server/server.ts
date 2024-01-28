@@ -8,6 +8,8 @@ import './Passport-Config/passport';
 import connectDB from './DB/db';
 import signupRouter from './Routes/signup';
 import loginRouter from './Routes/login';
+import refreshRouter from './Routes/refreshToken';
+import logoutRouter from './Routes/logout';
 
 dotenv.config();
 
@@ -35,6 +37,8 @@ app.use(passport.initialize());
 
 app.use('/signup', signupRouter);
 app.use('/login', loginRouter);
+app.use('/refresh', refreshRouter);
+app.use('/logout', logoutRouter);
 
 
 app.listen(PORT, () => {
