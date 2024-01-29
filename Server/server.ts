@@ -10,6 +10,9 @@ import signupRouter from './Routes/signup';
 import loginRouter from './Routes/login';
 import refreshRouter from './Routes/refreshToken';
 import logoutRouter from './Routes/logout';
+import googleRouter from './Routes/googleOauth';
+import changePasswordRouter from './Routes/changePassword';
+import blogRouter from './Controllers/blogRoute'
 
 dotenv.config();
 
@@ -39,6 +42,9 @@ app.use('/signup', signupRouter);
 app.use('/login', loginRouter);
 app.use('/refresh', refreshRouter);
 app.use('/logout', logoutRouter);
+app.use('/changePassword', changePasswordRouter);
+app.use('/auth/google', googleRouter);
+app.use('/blog', blogRouter)
 
 
 app.listen(PORT, () => {
