@@ -1,8 +1,5 @@
 import passport from 'passport';
-//import bcrypt from 'bcrypt';
-//import { Request } from 'express';
 import { Strategy as JwtStrategy, ExtractJwt, VerifiedCallback } from 'passport-jwt';
-//import { Strategy as LocalStrategy } from 'passport-local';
 import { getUserById } from '../DB/user';
 import dotenv from 'dotenv';
 dotenv.config();
@@ -15,28 +12,6 @@ const options = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
   secretOrKey: process.env.JWT_SECRET,
 };
-
-/* Local Strategy for signup a user
-passport.use('signup', new LocalStrategy({
-    usernameField: 'username',
-    passwordField: 'password',
-    passReqToCallback: true,
-  }, async (req: Request, username: string, password: string, done) => {
-    try {
-      // Hash the password
-      const hashedPassword = await bcrypt.hash(password, 10);
-      // Create the new user
-      const newUser = { 
-        username: username, 
-        password: hashedPassword,
-      }
-      // Save the user
-        const user = await createUser(newUser);
-        return done(null, user);
-    } catch (err) {
-      return done(err);
-    }
-  })); */
 
 // JWT Strategy for authenticating a user
 passport.use(new JwtStrategy(options, async (jwt_payload: any, done: VerifiedCallback) => {
