@@ -1,13 +1,15 @@
 import connectDB from "./db";
 import { ObjectId } from "mongodb";
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 dotenv.config();
 
 interface User {
     _id?: ObjectId;
+    googleId?: string;
     username: string;
-    password: string;
+    password?: string;
 }
 
 // Function to create a new user
@@ -55,6 +57,38 @@ async function getUserByUsername(username: string): Promise<User | null> {
     }
 }
 
+// Function to get a user by google id
+async function getUserByGoogleId(googleId: string): Promise<User | null> {
+    try {
+        const db = await connectDB();
+        if (!db) {
+            throw new Error('Database not connected');
+        }
+        const user: User | null = await db.collection('user').findOne({ googleId }) as User | null;
+        return user;
+    } catch (err) {
+        console.log('Database Error', err);
+        throw err;
+    }
+}
+
+// Function to change the password of a user
+async function changePassword(userId: string, newPassword: string) {
+    try {
+        const db = await connectDB();
+        if (!db) {
+            throw new Error('Database not connected');
+        } 
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+      // Update the user's password in the database
+        await db.collection('user').updateOne({ _id: new ObjectId(userId) },
+         { $set: { password: hashedPassword } });
+    } catch (err) {
+        console.log('Database Error', err);
+        throw err;
+    }
+}
+
 // Function to store the refresh token in the database
 async function storeRefreshToken(refreshToken: string, userId: string) {
     try {
@@ -62,7 +96,8 @@ async function storeRefreshToken(refreshToken: string, userId: string) {
         if (!db) {
             throw new Error('Database not connected');
         }
-        await db.collection('user').updateOne({ _id: new ObjectId(userId) }, { $set: { refreshToken } });
+        await db.collection('user').updateOne(
+            { _id: new ObjectId(userId) }, { $set: { refreshToken } });
     } catch (err) {
         console.log('Database Error', err);
         throw err;
@@ -123,6 +158,8 @@ export {
     createUser,
     getUserById,
     getUserByUsername,
+    getUserByGoogleId,
+    changePassword,
     storeRefreshToken,
     validateRefreshToken,
     deleteRefreshToken,
