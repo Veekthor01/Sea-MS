@@ -12,7 +12,13 @@ import refreshRouter from './Routes/refreshToken';
 import logoutRouter from './Routes/logout';
 import googleRouter from './Routes/googleOauth';
 import changePasswordRouter from './Routes/changePassword';
-import blogRouter from './Controllers/blogRoute'
+import blogRouter from './ContentRoute/blogRoute'
+import resumeRouter from './ContentRoute/resumeRoute'
+import portfolioRouter from './ContentRoute/portfolioRoute'
+import blogTemplateRouter from './TemplateRoute/blogTemplateRoute'
+import portfolioTemplateRouter from './TemplateRoute/portfolioTemplateRoute'
+import resumeTemplateRouter from './TemplateRoute/resumeTemplateRoute'
+import imageRouter from './Images/imageRoute'
 
 dotenv.config();
 
@@ -44,8 +50,13 @@ app.use('/refresh', refreshRouter);
 app.use('/logout', logoutRouter);
 app.use('/changePassword', changePasswordRouter);
 app.use('/auth/google', googleRouter);
-app.use('/blog', blogRouter)
-
+app.use('/userBlog', blogRouter)
+app.use('/userResume', resumeRouter)
+app.use('/userPortfolio', portfolioRouter)
+app.use('/blogTemplate', blogTemplateRouter)
+app.use('/portfolioTemplate', portfolioTemplateRouter)
+app.use('/resumeTemplate', resumeTemplateRouter)
+app.use('/upload', imageRouter)
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
