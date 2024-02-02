@@ -1,6 +1,6 @@
 import express from 'express';
 import { ObjectId } from 'mongodb';
-import { createBlogTemplate, getBlogTemplateByName, getBlogTemplateById, updateBlogTemplate, deleteBlogTemplate } from '../Template/blogTemplate';
+import { createBlogTemplate, getBlogTemplateByName, getAllBlogTemplates, getBlogTemplateById, updateBlogTemplate, deleteBlogTemplate } from '../Template/blogTemplate';
 
 const router = express.Router();
 
@@ -11,6 +11,16 @@ router.post('/', async (req, res) => {
         res.status(200).json(blogTemplate);
     } catch (err) {
         res.status(500).json({ message: 'Failed to create blog template' });
+    }
+});
+
+//Route to get all blog templates
+router.get('/', async (req, res) => {
+    try {
+        const blogTemplates = await getAllBlogTemplates();
+        res.status(200).json(blogTemplates);
+    } catch (err) {
+        res.status(500).json({ message: 'Failed to retrieve blog templates' });
     }
 });
 
