@@ -4,7 +4,6 @@ import connectDB from '../DB/db';
 interface Projects {
     name?: string;
     description?: string;
-    images?: string[];
     technologies?: string[];
     url?: string;
 }
@@ -14,7 +13,6 @@ interface PortfolioTemplate {
     name?: string;
     author?: string;
     about?: string;
-    images?: string[];
     technologies?: string[];
     projects?: Projects[];
 }
@@ -31,6 +29,21 @@ async function createPortfolioTemplate(newPortfolioTemplate: PortfolioTemplate):
         };
         const result = await db.collection('portfolioTemplate').insertOne(portfolioTemplateToInsert);
         return { ...portfolioTemplateToInsert, _id: result.insertedId };
+    } catch (err) {
+        console.log('Database Error', err);
+        throw err;
+    }
+}
+
+// Function to get all portfolio templates
+async function getAllPortfolioTemplates(): Promise<PortfolioTemplate[]> {
+    try {
+        const db = await connectDB();
+        if (!db) {
+            throw new Error('Database not connected');
+        }
+        const portfolioTemplates: PortfolioTemplate[] = await db.collection('portfolioTemplate').find().toArray() as PortfolioTemplate[];
+        return portfolioTemplates;
     } catch (err) {
         console.log('Database Error', err);
         throw err;
@@ -211,6 +224,7 @@ async function deleteUserPortfolio(_id: ObjectId): Promise<boolean> {
 
 export {
     createPortfolioTemplate,
+    getAllPortfolioTemplates,
     getPortfolioTemplateByName,
     getPortfolioTemplateById,
     updatePortfolioTemplate,
