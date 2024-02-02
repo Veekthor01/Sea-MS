@@ -1,6 +1,6 @@
 import express from 'express';
 import { ObjectId } from 'mongodb';
-import { createPortfolioTemplate, getPortfolioTemplateByName, getPortfolioTemplateById, updatePortfolioTemplate, deletePortfolioTemplate } from '../Template/portfolioTemplate';
+import { createPortfolioTemplate, getPortfolioTemplateByName, getAllPortfolioTemplates, getPortfolioTemplateById, updatePortfolioTemplate, deletePortfolioTemplate } from '../Template/portfolioTemplate';
 
 const router = express.Router();
 
@@ -11,6 +11,16 @@ router.post('/', async (req, res) => {
         res.status(200).json(portfolioTemplate);
     } catch (err) {
         res.status(500).json({ message: 'Failed to create portfolio template' });
+    }
+});
+
+//Route to get all portfolio templates
+router.get('/', async (req, res) => {
+    try {
+        const portfolioTemplates = await getAllPortfolioTemplates();
+        res.status(200).json(portfolioTemplates);
+    } catch (err) {
+        res.status(500).json({ message: 'Failed to retrieve portfolio templates' });
     }
 });
 
