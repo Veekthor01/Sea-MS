@@ -1,6 +1,6 @@
 import express from 'express';
 import { ObjectId } from 'mongodb';
-import { createResumeTemplate, getResumeTemplateByName, getResumeTemplateById, updateResumeTemplate, deleteResumeTemplate } from '../Template/resumeTemplate';
+import { createResumeTemplate, getAllResumeTemplates, getResumeTemplateByName, getResumeTemplateById, updateResumeTemplate, deleteResumeTemplate } from '../Template/resumeTemplate';
 
 const router = express.Router();
 
@@ -11,6 +11,16 @@ router.post('/', async (req, res) => {
         res.status(200).json(resumeTemplate);
     } catch (err) {
         res.status(500).json({ message: 'Failed to create resume template' });
+    }
+});
+
+//Route to get all resume templates
+router.get('/', async (req, res) => {
+    try {
+        const resumeTemplates = await getAllResumeTemplates();
+        res.status(200).json(resumeTemplates);
+    } catch (err) {
+        res.status(500).json({ message: 'Failed to retrieve resume templates' });
     }
 });
 
