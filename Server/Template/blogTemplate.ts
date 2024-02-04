@@ -30,25 +30,6 @@ async function createBlogTemplate(newBlogTemplate: BlogTemplate): Promise<BlogTe
     }
 }
 
-/*Function to store the publicUrl of the image in the database
-async function storeImageInDB(publicUrl: string, _id: ObjectId): Promise<BlogTemplate | null> {
-    const db = await connectDB();
-    if (!db) {
-        throw new Error('Database not connected');
-    }
-    try {
-        const blogTemplateToUpdate: Partial<BlogTemplate> = {
-            images: [publicUrl],
-        };
-        await db.collection('blogTemplate').updateOne({ _id: _id }, { $push: blogTemplateToUpdate });
-        const updatedBlogTemplate = await getBlogTemplateById(_id);
-        return updatedBlogTemplate;
-    } catch (err) {
-        console.log('Database Error', err);
-        throw err;
-    }
-} */
-
 // Function to get a blog template by name
 async function getBlogTemplateByName(name: string): Promise<BlogTemplate | null> {
     try {
