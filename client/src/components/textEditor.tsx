@@ -1,6 +1,9 @@
 import { useCallback, useRef, useMemo, useState, useEffect } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import axios from 'axios';
+
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 interface BlogTemplate {
   _id: string;
@@ -55,24 +58,51 @@ const handleAuthorChange = (newValue: string) => {
     input.setAttribute("accept", "image/*");
     input.click();
     // When a file is selected
-    input.onchange = () => {
+    input.onchange = async () => {
         if (input.files) {
           const file = input.files[0];
           const reader = new FileReader();
           // Read the selected file as a data URL
-          reader.onload = () => {
+          reader.onload = async () => {
             if (quill.current) {
               const imageUrl = reader.result;
               const quillEditor = quill.current.getEditor();
               // Get the current selection range and insert the image at that index
               const range = quillEditor.getSelection(true);
               quillEditor.insertEmbed(range.index, "image", imageUrl, "user");
+              // Upload the image to the server
+              const formData = new FormData();
+              formData.append('file', file);
+              let response = await axios.post(`${BACKEND_URL}/upload`, formData, {
+                headers: { 'Content-Type': 'multipart/form-data' },
+              });
+              if (response.status === 200) {
+                console.log('Image uploaded!');
+                alert('Image uploaded!');
+                // Replace the Data URL with the URL of the uploaded image
+                const uploadedImageUrl = response.data.publicUrl; // Adjust this line based on the actual structure of your response
+                quillEditor.deleteText(range.index, 1);
+                quillEditor.insertEmbed(range.index, "image", uploadedImageUrl, "user");
+              } else {
+                console.error('Error uploading image:', response.data.message);
+                quillEditor.deleteText(range.index, 1);
+              }
             }
           };
           reader.readAsDataURL(file);
         }
       };
   }, []);
+
+  // Function to remove image from text editor
+  const removeImage = () => {
+    if (quill.current) {
+      const quillEditor = quill.current.getEditor();
+      const range = quillEditor.getSelection(true);
+      quillEditor.deleteText(range.index, 1);
+    }
+  }
+
 
     // Define the formats for the toolbar
     const formats = ["header","bold","italic","underline","strike","blockquote","list","bullet",
@@ -102,6 +132,7 @@ const handleAuthorChange = (newValue: string) => {
   );
 
   return (
+    <>
     <div>
       <ReactQuill theme="snow"
         modules={modules}
@@ -125,7 +156,36 @@ const handleAuthorChange = (newValue: string) => {
         onChange={handleValueChange}
       />
     </div>
+    <div>
+    <button onClick={removeImage}>Remove Image</button>
+  </div>
+</>
   );
 }
 
 export default TextEditor;
+/* const removeImage = () => {
+    if (quill.current) {
+      const quillEditor = quill.current.getEditor();
+      const range = quillEditor.getSelection();
+      if (range) {
+        if (range.length == 0) {
+          const [leaf] = quillEditor.getLeaf(range.index);
+          if (leaf) {
+            const formats = leaf.formats();
+            if (formats.image) {
+              quillEditor.deleteText(range.index, 1);
+            }
+          }
+        } else {
+          const [leaf] = quillEditor.getLeaf(range.index + range.length);
+          if (leaf) {
+            const formats = leaf.formats();
+            if (formats.image) {
+              quillEditor.deleteText(range.index, range.length);
+            }
+          }
+        }
+      }
+    }
+  };*/
