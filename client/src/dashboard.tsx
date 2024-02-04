@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
+import UserBlog from "./components/blog/userBlog";
 
 function Dashboard () {
+
     return (
         <>
         {/*Header*/}
@@ -13,12 +15,16 @@ function Dashboard () {
         </div>
         <div>
          <h1>Profile</h1>
-            <Link to='/changepassword'><p>Login</p></Link>
-            <Link to='/logout'><p>Get Started</p></Link>
+            <Link to='/changepassword'><p>Change Password</p></Link>
+            <Link to='/logout'><p>Logout</p></Link>
         </div>
         </div>
 
         {/*user content*/}
+        <div>
+            <UserBlog />
+        </div>
+        
         </>
     );
 }
