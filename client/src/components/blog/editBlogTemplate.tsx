@@ -29,12 +29,10 @@ function EditBlogTemplate() {
     if (!template) {
       return;
     }
-  
     try {
       // Create a new user blog
       let responseCreate = await axios.post(`${BACKEND_URL}/userBlog`, { templateName: template.name });
       setUserBlogId(responseCreate.data._id); // Save the user blog ID
-  
       // Update the newly created user blog
       let responseUpdate = await axios.put(`${BACKEND_URL}/userBlog/${responseCreate.data._id}`, {
         name: template.name,
@@ -59,6 +57,15 @@ function EditBlogTemplate() {
       setTemplate({ ...template, ...newValues });
     }
   };
+
+  /*const handleDelete = async () => {
+    let response = await axios.delete(`${BACKEND_URL}/upload/${imageId}`);
+    if (response.status === 200) {
+      console.log('Image deleted!');
+    } else {
+      console.error('Error deleting image:', response.data.message);
+    }
+  }; */
 
   return (
     <div>
