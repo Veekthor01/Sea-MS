@@ -18,7 +18,7 @@ interface TextEditorProps {
   onChange: (template: Partial<BlogTemplate>) => void;
 }
 
-function TextEditor({ value, onChange }: TextEditorProps) {
+function BlogTemplateTextEditor({ value, onChange }: TextEditorProps) {
  const quill = useRef<ReactQuill>(null);
  const [editorContent, setEditorContent] = useState('');
  const [title, setTitle] = useState('');
@@ -163,7 +163,7 @@ const handleAuthorChange = (newValue: string) => {
   );
 }
 
-export default TextEditor;
+export default BlogTemplateTextEditor;
 /* const removeImage = () => {
     if (quill.current) {
       const quillEditor = quill.current.getEditor();
@@ -188,4 +188,11 @@ export default TextEditor;
         }
       }
     }
-  };*/
+  };
+  That's great! The code you used is a simplified version of the removeImage function. 
+  It assumes that the current selection is an image and directly deletes it. 
+  This will work fine if you ensure that the user only clicks the "Remove Image" button 
+  when an image is selected. If the user clicks the button when the selection is not an image, 
+  it will delete the character at the current selection. 
+  If this behavior is acceptable in your application, then your simplified code is a good solution.
+  */
