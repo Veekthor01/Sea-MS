@@ -1,6 +1,7 @@
 import express from 'express';
 import { ObjectId } from 'mongodb';
 import { createBlogTemplate, getBlogTemplateByName, getAllBlogTemplates, getBlogTemplateById, updateBlogTemplate, deleteBlogTemplate } from '../Template/blogTemplate';
+import { format } from 'date-fns';
 
 const router = express.Router();
 
@@ -31,9 +32,13 @@ router.get('/:name', async (req, res) => {
         const blogTemplate = await getBlogTemplateByName(req.params.name);
         if (blogTemplate) {
             if (blogTemplate.createdAt && blogTemplate.updatedAt) {
-            const displayDate = blogTemplate.createdAt.getTime() === blogTemplate.updatedAt.getTime() ? blogTemplate.createdAt : blogTemplate.updatedAt;
-            console.log('Display date:', displayDate);
-        }}
+                const createdAt = new Date(blogTemplate.createdAt);
+                const updatedAt = new Date(blogTemplate.updatedAt);
+                const displayDate = createdAt.getTime() === updatedAt.getTime() ? createdAt : updatedAt;
+                const formattedDisplayDate = format(displayDate, 'dd MMM yyyy');
+                console.log('Display date:', formattedDisplayDate);
+            }
+        }
         res.status(200).json(blogTemplate);
     } catch (err) {
         res.status(500).json({ message: 'Failed to retrieve blog template' });
@@ -47,9 +52,13 @@ router.get('/id/:id', async (req, res) => {
         const blogTemplate = await getBlogTemplateById(_id);
         if (blogTemplate) {
             if (blogTemplate.createdAt && blogTemplate.updatedAt) {
-            const displayDate = blogTemplate.createdAt.getTime() === blogTemplate.updatedAt.getTime() ? blogTemplate.createdAt : blogTemplate.updatedAt;
-            console.log('Display date:', displayDate);
-        }}
+                const createdAt = new Date(blogTemplate.createdAt);
+                const updatedAt = new Date(blogTemplate.updatedAt);
+                const displayDate = createdAt.getTime() === updatedAt.getTime() ? createdAt : updatedAt;
+                const formattedDisplayDate = format(displayDate, 'dd MMM yyyy');
+                console.log('Display date:', formattedDisplayDate);
+            }
+        }
         res.status(200).json(blogTemplate);
     } catch (err) {
         res.status(500).json({ message: 'Failed to retrieve blog template' });
