@@ -1,5 +1,6 @@
 import {ObjectId} from 'mongodb';
 import connectDB from '../DB/db';
+import { format } from 'date-fns';
 
 interface BlogTemplate {
     _id: ObjectId;
@@ -7,8 +8,8 @@ interface BlogTemplate {
     title?: string;
     content?: string;
     author?: string;
-    createdAt?: Date;
-    updatedAt?: Date;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
 }
 
 // Function to create a new blog template
@@ -20,7 +21,7 @@ async function createBlogTemplate(newBlogTemplate: BlogTemplate): Promise<BlogTe
     try {
         const blogTemplateToInsert: BlogTemplate = {
             ...newBlogTemplate,
-            createdAt: new Date()
+            createdAt: format(new Date(), 'dd MMM yyyy'),
         };
         const result = await db.collection('blogTemplate').insertOne(blogTemplateToInsert);
         return { ...blogTemplateToInsert, _id: result.insertedId };
@@ -86,7 +87,7 @@ async function updateBlogTemplate(_id: ObjectId, blogTemplate: BlogTemplate): Pr
         }
         await db.collection('blogTemplate').updateOne(
             { _id: new ObjectId(_id) },
-            { $set: { ...blogTemplate, updatedAt: new Date() } }
+            { $set: { ...blogTemplate, updatedAt: format(new Date(), 'dd MMM yyyy') } }
         );
         const updatedBlogTemplate = await getBlogTemplateById(_id);
         return updatedBlogTemplate;
@@ -120,7 +121,7 @@ async function saveUserBlog(userBlog: BlogTemplate): Promise<BlogTemplate> {
     try {
         const userBlogToInsert: BlogTemplate = {
             ...userBlog,
-            createdAt: new Date(),
+            createdAt: format(new Date(), 'dd MMM yyyy'),
         };
         const result = await db.collection('userBlog').insertOne(userBlogToInsert);
         return { ...userBlogToInsert, _id: result.insertedId };
@@ -186,7 +187,7 @@ async function updateUserBlog(_id: ObjectId, userBlog: BlogTemplate): Promise<Bl
         }
         await db.collection('userBlog').updateOne(
             { _id: new ObjectId(_id) },
-            { $set: { ...userBlog, updatedAt: new Date() } }
+            { $set: { ...userBlog, updatedAt: format(new Date(), 'dd MMM yyyy') } }
         );
         const updatedUserBlog = await getUserBlogById(_id);
         return updatedUserBlog;
