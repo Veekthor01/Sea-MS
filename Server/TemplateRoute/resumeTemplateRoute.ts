@@ -1,11 +1,11 @@
 import express from 'express';
 import { ObjectId } from 'mongodb';
 import { createResumeTemplate, getAllResumeTemplates, getResumeTemplateByName, getResumeTemplateById, updateResumeTemplate, deleteResumeTemplate } from '../Template/resumeTemplate';
-
+import authenticateJWT from '../Passport-Config/auth';
 const router = express.Router();
 
 // Route to create a resume template
-router.post('/', async (req, res) => {
+router.post('/', authenticateJWT, async (req, res) => {
     try {
         const resumeTemplate = await createResumeTemplate(req.body);
         res.status(200).json(resumeTemplate);
@@ -15,7 +15,7 @@ router.post('/', async (req, res) => {
 });
 
 //Route to get all resume templates
-router.get('/', async (req, res) => {
+router.get('/', authenticateJWT, async (req, res) => {
     try {
         const resumeTemplates = await getAllResumeTemplates();
         res.status(200).json(resumeTemplates);
@@ -25,7 +25,7 @@ router.get('/', async (req, res) => {
 });
 
 // Route to get a resume template by name
-router.get('/:name', async (req, res) => {
+router.get('/:name', authenticateJWT, async (req, res) => {
     try {
         const resumeTemplate = await getResumeTemplateByName(req.params.name);
         res.status(200).json(resumeTemplate);
@@ -35,7 +35,7 @@ router.get('/:name', async (req, res) => {
 });
 
 // Route to get a resume template by id
-router.get('/id/:id', async (req, res) => {
+router.get('/id/:id', authenticateJWT, async (req, res) => {
     try {
         const _id = new ObjectId(req.params.id);
         const resumeTemplate = await getResumeTemplateById(_id);
@@ -46,7 +46,7 @@ router.get('/id/:id', async (req, res) => {
 });
 
 // Route to update a resume template by id
-router.put('/:id', async (req, res) => {
+router.put('/:id', authenticateJWT, async (req, res) => {
     try {
         const _id = new ObjectId(req.params.id);
         const resumeTemplate = await updateResumeTemplate(_id, req.body);
@@ -57,7 +57,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // Route to delete a resume template by id
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', authenticateJWT, async (req, res) => {
     try {
         const _id = new ObjectId(req.params.id);
         const result = await deleteResumeTemplate(_id);

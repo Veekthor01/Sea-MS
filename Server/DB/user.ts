@@ -10,6 +10,8 @@ interface User {
     googleId?: string;
     username: string;
     password?: string;
+    refreshToken?: string;
+    token?: string;
 }
 
 // Function to create a new user

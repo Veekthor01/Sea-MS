@@ -10,6 +10,17 @@ import ResumeTemplate from './templates/resume/resumeTemplate';
 import EditBlogTemplate from './templates/blog/editBlogTemplate';
 import EditPortfolioTemplate from './templates/portfolio/editPortfolioTemplate';
 import EditResumeTemplate from './templates/resume/editResumeTemplate';
+import UserBlog from './user/blog/userBlog';
+import UserPortfolio from './user/portfolio/userPortfolio';
+import UserResume from './user/resume/userResume';
+import EditUserBlog from './user/blog/editUserBlog';
+import EditUserPortfolio from './user/portfolio/editUserPortfolio';
+import EditUserResume from './user/resume/editUserResume';
+import BlogURLPage from './user/blog/userBlogURL';
+import PortfolioURLPage from './user/portfolio/userPortfolioURL';
+import ResumeURLPage from './user/resume/userResumeURL';
+import SignupPage from './auth/signup';
+import LoginPage from './auth/login';
 
 const queryClient = new QueryClient();
 
@@ -18,13 +29,24 @@ const routes = createRoutesFromElements(
   <React.Fragment> {/* or use Route instead of React.Fragement which is also basically <> </> tags */}
   <Route path="/" element={<Home />} />
   <Route path="/dashboard" element={<Dashboard />} />
-  <Route path="/templates" element={<Template />} />
+  <Route path="/template" element={<Template />} />
   <Route path="/blogtemplate" element={<BlogTemplate />} />
   <Route path="/portfoliotemplate" element={<PortfolioTemplate />} />
   <Route path="/resumetemplate" element={<ResumeTemplate />} />
   <Route path="/editblogtemplate/:id" element={<EditBlogTemplate />} />
   <Route path="/editportfoliotemplate/:id" element={<EditPortfolioTemplate />} />
   <Route path="/editresumetemplate/:id" element={<EditResumeTemplate />} />
+  <Route path="/userblog" element={<UserBlog />} />
+  <Route path="/userportfolio" element={<UserPortfolio />} />
+  <Route path="/userresume" element={<UserResume />} />
+  <Route path="/edituserblog/:id" element={<EditUserBlog />} />
+  <Route path="/edituserportfolio/:id" element={<EditUserPortfolio />} />
+  <Route path="/edituserresume/:id" element={<EditUserResume />} />
+  <Route path="/blog/:name" element={<BlogURLPage />} />
+  <Route path="/portfolio/:name" element={<PortfolioURLPage />} />
+  <Route path="/resume/:name" element={<ResumeURLPage />} />
+  <Route path="/signup" element={<SignupPage />} />
+  <Route path="/login" element={<LoginPage />} />
   </React.Fragment>
 );
 
