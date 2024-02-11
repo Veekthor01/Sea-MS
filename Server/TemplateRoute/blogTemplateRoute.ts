@@ -2,11 +2,12 @@ import express from 'express';
 import { ObjectId } from 'mongodb';
 import { createBlogTemplate, getBlogTemplateByName, getAllBlogTemplates, getBlogTemplateById, updateBlogTemplate, deleteBlogTemplate } from '../Template/blogTemplate';
 import { format } from 'date-fns';
+import authenticateJWT from '../Passport-Config/auth';
 
 const router = express.Router();
 
 // Route to create a blog template
-router.post('/', async (req, res) => {
+router.post('/', authenticateJWT, async (req, res) => {
     try {
         const blogTemplate = await createBlogTemplate(req.body);
         res.status(200).json(blogTemplate);
@@ -16,7 +17,7 @@ router.post('/', async (req, res) => {
 });
 
 //Route to get all blog templates
-router.get('/', async (req, res) => {
+router.get('/', authenticateJWT, async (req, res) => {
     try {
         const blogTemplates = await getAllBlogTemplates();
         res.status(200).json(blogTemplates);
@@ -27,7 +28,7 @@ router.get('/', async (req, res) => {
 
 
 // Route to get a blog template by name
-router.get('/:name', async (req, res) => {
+router.get('/:name', authenticateJWT, async (req, res) => {
     try {
         const blogTemplate = await getBlogTemplateByName(req.params.name);
         if (blogTemplate) {
@@ -46,7 +47,7 @@ router.get('/:name', async (req, res) => {
 });
 
 // Route to get a blog template by id
-router.get('/id/:id', async (req, res) => {
+router.get('/id/:id', authenticateJWT, async (req, res) => {
     try {
         const _id = new ObjectId(req.params.id);
         const blogTemplate = await getBlogTemplateById(_id);
@@ -66,7 +67,7 @@ router.get('/id/:id', async (req, res) => {
 });
 
 // Route to update a blog template by id
-router.put('/:id', async (req, res) => {
+router.put('/:id', authenticateJWT, async (req, res) => {
     try {
         const _id = new ObjectId(req.params.id);
         const blogTemplate = await updateBlogTemplate(_id, req.body);
@@ -77,7 +78,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // Route to delete a blog template by id
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', authenticateJWT, async (req, res) => {
     try {
         const _id = new ObjectId(req.params.id);
         const result = await deleteBlogTemplate(_id);
