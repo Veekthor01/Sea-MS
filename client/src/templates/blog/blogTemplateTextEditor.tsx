@@ -7,7 +7,6 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 interface BlogTemplate {
   _id: string;
-  name: string;
   title: string;
   content: string;
   author: string;
@@ -30,8 +29,7 @@ function BlogTemplateTextEditor({ value, onChange }: TextEditorProps) {
   setAuthor(value.author);
 }, [value]);
 
-
-    
+ 
  const handleValueChange = (newValue: string) => {
   setEditorContent(newValue);
   const updatedValue = { ...value, content: newValue };
@@ -98,10 +96,28 @@ const handleAuthorChange = (newValue: string) => {
   const removeImage = () => {
     if (quill.current) {
       const quillEditor = quill.current.getEditor();
-      const range = quillEditor.getSelection(true);
-      quillEditor.deleteText(range.index, 1);
+      const range = quillEditor.getSelection();
+      if (range) {
+        if (range.length == 0) {
+          const [leaf] = quillEditor.getLeaf(range.index);
+          if (leaf) {
+            const formats = leaf.formats();
+            if (formats.image) {
+              quillEditor.deleteText(range.index, 1);
+            }
+          }
+        } else {
+          const [leaf] = quillEditor.getLeaf(range.index + range.length);
+          if (leaf) {
+            const formats = leaf.formats();
+            if (formats.image) {
+              quillEditor.deleteText(range.index, range.length);
+            }
+          }
+        }
+      }
     }
-  }
+  };
 
 
     // Define the formats for the toolbar
@@ -134,6 +150,7 @@ const handleAuthorChange = (newValue: string) => {
   return (
     <>
     <div>
+    <h1 className='font-roboto font-semibold'>Title</h1>
       <ReactQuill theme="snow"
         modules={modules}
         formats={formats}
@@ -141,6 +158,7 @@ const handleAuthorChange = (newValue: string) => {
         onChange={handleTitleChange}
         placeholder="Title"
       />
+      <h1 className='font-roboto font-semibold'>Name</h1> 
       <ReactQuill theme="snow"
         modules={modules}
         formats={formats}
@@ -148,6 +166,12 @@ const handleAuthorChange = (newValue: string) => {
         onChange={handleAuthorChange}
         placeholder="Author"
       />
+      <div className="flex justify-end">
+      <button 
+        className='mx-2 my-2 text-sm font-roboto font-semibold bg-black text-white px-2 py-1 rounded'
+      onClick={removeImage}>Remove Image</button>
+    </div>
+    <h1 className='font-roboto font-semibold'>Content</h1>
       <ReactQuill theme="snow"
         modules={modules}
         formats={formats}
@@ -156,9 +180,6 @@ const handleAuthorChange = (newValue: string) => {
         onChange={handleValueChange}
       />
     </div>
-    <div>
-    <button onClick={removeImage}>Remove Image</button>
-  </div>
 </>
   );
 }
