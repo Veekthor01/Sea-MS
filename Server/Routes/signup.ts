@@ -32,7 +32,7 @@ router.post('/', async (req, res) => {
         // Save the user
         const user = await createUser(newUser);
         // Generate a signed json web token with the contents of user object and return it in the response
-        const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET as string, { expiresIn: '1h' });
+        const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET as string, { expiresIn: '1m' });
         const refreshToken = jwt.sign({ _id: user._id }, process.env.JWT_REFRESH as string, { expiresIn: '30d' });
         // Store the refresh token in the database
         if (user._id) {
@@ -41,7 +41,10 @@ router.post('/', async (req, res) => {
             // Handle the case where user._id is undefined
             console.error('User ID is undefined');
         }
-        return res.status(200).json({ message: 'Signup Successful', token, refreshToken });
+        // Set the JWT and refresh token in HTTP-only cookies 
+        res.cookie('token', token, { httpOnly: true, secure: false, sameSite: 'lax', maxAge: 6000 });//secure: true, sameSite: 'strict' in production
+      res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: false, sameSite: 'lax', maxAge: 2592000000 });//secure: true, sameSite: 'strict' in production
+        return res.status(200).json({ message: 'Signup Successful' });
     } catch (err) {
         console.error('Internal server error', err);
         return res.status(500).json({ message: 'Internal server error' });
