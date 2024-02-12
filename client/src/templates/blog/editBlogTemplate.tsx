@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+//import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import BlogTemplateTextEditor from './blogTemplateTextEditor';
+import CheckAuthenticated from '../../auth/authMiddleware';
+import api from '../../auth/refreshMiddleware';
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -20,7 +22,7 @@ function EditBlogTemplate() {
 
   useEffect(() => {
     // Fetch the existing blog template when the component is mounted
-    axios.get(`${BACKEND_URL}/blogTemplate/id/${id}`)
+    api.get(`${BACKEND_URL}/blogTemplate/id/${id}`, { withCredentials: true })
       .then(response => setTemplate(response.data))
       .catch(error => console.error('Error fetching blog template:', error));
   }, [id]);
@@ -31,15 +33,18 @@ function EditBlogTemplate() {
     }
     try {
       // Create a new user blog
-      let responseCreate = await axios.post(`${BACKEND_URL}/userBlog`, { templateName: template.name });
+      let responseCreate = await api.post(`${BACKEND_URL}/userBlog`, 
+      { templateName: template.name }, { withCredentials: true });
       setUserBlogId(responseCreate.data._id); // Save the user blog ID
       // Update the newly created user blog
-      let responseUpdate = await axios.put(`${BACKEND_URL}/userBlog/${responseCreate.data._id}`, {
+      let responseUpdate = await api.put(`${BACKEND_URL}/userBlog/${responseCreate.data._id}`, 
+      {
         name: template.name,
         title: template.title,
         author: template.author,
         content: template.content,
-      });
+      },
+      { withCredentials: true });
   
       if (responseUpdate.status === 200) {
         alert('Blog saved!');
@@ -60,10 +65,15 @@ function EditBlogTemplate() {
 
   return (
     <div>
+      <CheckAuthenticated />
       {template ? (
         <>
+        <button 
+          className='mx-2 my-2 font-roboto font-semibold bg-black text-white px-2 py-1 rounded'
+          onClick={handleSave}>
+            Save Template
+          </button>
           <BlogTemplateTextEditor value={template} onChange={handleTemplateChange} />
-          <button onClick={handleSave}>Save</button>
         </>
       ) : (
         <p>Loading...</p>

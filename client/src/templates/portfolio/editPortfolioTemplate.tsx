@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+//import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import PortfolioTemplateTextEditor from './portfolioTemplateTextEditor';
+import CheckAuthenticated from '../../auth/authMiddleware';
+import api from '../../auth/refreshMiddleware';
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -28,7 +30,7 @@ function EditPortfolioTemplate() {
 
     useEffect(() => {
         // Fetch the existing portfolio template when the component is mounted
-        axios.get(`${BACKEND_URL}/portfolioTemplate/id/${id}`)
+        api.get(`${BACKEND_URL}/portfolioTemplate/id/${id}`, { withCredentials: true })
             .then(response => setTemplate(response.data))
             .catch(error => console.error('Error fetching portfolio template:', error));
     }, [id]);
@@ -39,16 +41,17 @@ function EditPortfolioTemplate() {
         }
         try {
             // Create a new user portfolio
-            let responseCreate = await axios.post(`${BACKEND_URL}/userPortfolio`, { templateName: template.name });
+            let responseCreate = await api.post(`${BACKEND_URL}/userPortfolio`, 
+            { templateName: template.name }, { withCredentials: true });
             setUserPortfolioId(responseCreate.data._id); // Save the user portfolio ID
             // Update the newly created user portfolio
-            let responseUpdate = await axios.put(`${BACKEND_URL}/userPortfolio/${responseCreate.data._id}`, {
+            let responseUpdate = await api.put(`${BACKEND_URL}/userPortfolio/${responseCreate.data._id}`, {
                 name: template.name,
                 author: template.author,
                 about: template.about,
                 technologies: template.technologies,
                 projects: template.projects,
-            });
+            }, { withCredentials: true });
 
             if (responseUpdate.status === 200) {
                 alert('Portfolio saved!');
@@ -69,10 +72,15 @@ function EditPortfolioTemplate() {
 
     return (
         <div>
+            <CheckAuthenticated />
+            <button
+          className='mx-2 my-2 font-roboto font-semibold bg-black text-white px-2 py-1 rounded'
+          onClick={handleSave}>
+            Save Template
+          </button>
             {template ? (
                 <>
                     <PortfolioTemplateTextEditor value={template} onChange={handleTemplateChange} />
-                    <button onClick={handleSave}>Save</button>
                 </>
             ) : (
                 <h1>Loading...</h1>
