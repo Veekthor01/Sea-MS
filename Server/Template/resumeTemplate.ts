@@ -150,6 +150,22 @@ async function saveUserResume(userResume: ResumeTemplate): Promise<ResumeTemplat
     }
 }
 
+// Function to get a user resume by userId
+async function getUserResumeByUserId(userId: string): Promise<ResumeTemplate[] | null> {
+    try {
+        const db = await connectDB();
+        if (!db) {
+            throw new Error('Database not connected');
+        }
+        const userResume: ResumeTemplate[] | null = await db.collection('userResume').find(
+            { userId: userId }).toArray() as ResumeTemplate[] | null;
+        return userResume;
+    } catch (err) {
+        console.log('Database Error', err);
+        throw err;
+    }
+}
+
 // Function to get a user resume by name
 async function getUserResumeByName(name: string): Promise<ResumeTemplate | null> {
     try {
@@ -241,6 +257,7 @@ export {
     updateResumeTemplate,
     deleteResumeTemplate,
     saveUserResume,
+    getUserResumeByUserId,
     getUserResumeByName,
     getUserResumeById,
     getAllUserResumes,

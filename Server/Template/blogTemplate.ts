@@ -131,6 +131,22 @@ async function saveUserBlog(userBlog: BlogTemplate): Promise<BlogTemplate> {
     }
 }
 
+// Function to get a user blog by userId
+async function getUserBlogByUserId(userId: string): Promise<BlogTemplate[] | null> {
+    try {
+        const db = await connectDB();
+        if (!db) {
+            throw new Error('Database not connected');
+        }
+        const blogs: BlogTemplate[] | null = await db.collection('userBlog').find(
+            { userId: userId }).toArray() as BlogTemplate[] | null;
+        return blogs;
+    } catch (err) {
+        console.log('Database Error', err);
+        throw err;
+    }
+};
+
 // Function to get a user blog by name
 async function getUserBlogByName(name: string): Promise<BlogTemplate | null> {
     try {
@@ -220,6 +236,7 @@ export {
     updateBlogTemplate,
     deleteBlogTemplate,
     saveUserBlog,
+    getUserBlogByUserId,
     getUserBlogByName,
     getUserBlogById,
     getAllUserBlogs,
