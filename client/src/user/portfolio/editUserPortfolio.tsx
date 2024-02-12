@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+//import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import UserPortfolioTextEditor from './userPortfolioTextEditor';
+import CheckAuthenticated from '../../auth/authMiddleware';
+import api from '../../auth/refreshMiddleware';
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -27,7 +29,7 @@ function EditUserPortfolio() {
 
     useEffect(() => {
         // Fetch the existing user portfolio when the component is mounted
-        axios.get(`${BACKEND_URL}/userPortfolio/id/${id}`)
+        api.get(`${BACKEND_URL}/userPortfolio/id/${id}`, { withCredentials: true })
             .then(response => setUserPortfolio(response.data))
             .catch(error => console.error('Error fetching user portfolio:', error));
     }
@@ -39,13 +41,13 @@ function EditUserPortfolio() {
         }
         try {
             // Update the user portfolio
-            let response = await axios.put(`${BACKEND_URL}/userPortfolio/${userPortfolio._id}`, {
+            let response = await api.put(`${BACKEND_URL}/userPortfolio/${userPortfolio._id}`, {
                 name: userPortfolio.name,
                 author: userPortfolio.author,
                 about: userPortfolio.about,
                 technologies: userPortfolio.technologies,
                 projects: userPortfolio.projects,
-            });
+            }, { withCredentials: true });
 
             if (response.status === 200) {
                 alert('Portfolio saved!');
@@ -67,6 +69,7 @@ function EditUserPortfolio() {
 
     return (
         <div>
+           <CheckAuthenticated />
              <button
           className='mx-2 my-2 font-roboto font-semibold bg-black text-white px-2 py-1 rounded'
           onClick={handleSave}>
