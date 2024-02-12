@@ -5,8 +5,8 @@ import 'react-quill/dist/quill.snow.css';
 interface WorkExperience {
     company: string;
     position: string;
-    startDate: Date;
-    endDate: Date;
+    startDate: string;
+    endDate: string;
     description: string[];
 }
 
@@ -14,18 +14,17 @@ interface Education {
     school: string;
     degree: string;
     fieldOfStudy: string;
-    startDate: Date;
-    endDate: Date;
+    startDate: string;
+    endDate: string;
 }
 
 interface ResumeTemplate {
     _id: string;
-    name: string;
     author: string;
     email: string;
     phone: string;
-    workExperience: WorkExperience[];
-    education: Education[];
+    WorkExperience: WorkExperience[];
+    Education: Education[];
     certifications: string[];
     skills: string[];
 }
@@ -38,35 +37,28 @@ interface TextEditorProps {
 
 function ResumeTemplateTextEditor({ value, onChange }: TextEditorProps) {
     const quill = useRef<ReactQuill>(null);
-    const [author, setAuthor] = useState('');
-    const [email, setEmail] = useState('');
-    const [phone, setPhone] = useState('');
-    const [workExperience, setWorkExperience] = useState<WorkExperience[]>([]);
-    const [education, setEducation] = useState<Education[]>([]);
-    const [certifications, setCertifications] = useState<string[]>([]);
-    const [skills, setSkills] = useState<string[]>([]);
-
-    useEffect(() => {
-        setAuthor(value.author);
-        setEmail(value.email);
-        setPhone(value.phone);
-        setWorkExperience(value.workExperience || []);
-        setEducation(value.education || []);
-        setCertifications(value.certifications || []);
-        setSkills(value.skills || []);
-    }, [value]);
+    const [author, setAuthor] = useState(value.author);
+    const [email, setEmail] = useState(value.email);
+    const [phone, setPhone] = useState(value.phone);
+    const [workExperience, setWorkExperience] = useState<WorkExperience[]>(value.WorkExperience || []);
+    const [education, setEducation] = useState<Education[]>(value.Education || []);
+    const [certifications, setCertifications] = useState(value.certifications.join(', ') || '');
+    const [skills, setSkills] = useState(value.skills.join(', ') || '');
 
     const handleAuthorChange = (newValue: string) => {
+        setAuthor(newValue);
         const updatedValue = { ...value, author: newValue };
         onChange(updatedValue);
     };
 
     const handleEmailChange = (newValue: string) => {
+        setEmail(newValue);
         const updatedValue = { ...value, email: newValue };
         onChange(updatedValue);
     };
 
     const handlePhoneChange = (newValue: string) => {
+        setPhone(newValue);
         const updatedValue = { ...value, phone: newValue };
         onChange(updatedValue);
     };
@@ -75,9 +67,9 @@ function ResumeTemplateTextEditor({ value, onChange }: TextEditorProps) {
         const newWorkExperience = [...workExperience];
         newWorkExperience[index] = { ...newWorkExperience[index], ...newValue };
         setWorkExperience(newWorkExperience);
-        const updatedValue = { ...value, workExperience: newWorkExperience };
+        const updatedValue = { ...value, WorkExperience: newWorkExperience };
         onChange(updatedValue);
-    };
+    };              
 
     const handleEducationChange = (newValue: Partial<Education>, index: number) => {
         const newEducation = [...education];
@@ -87,36 +79,16 @@ function ResumeTemplateTextEditor({ value, onChange }: TextEditorProps) {
         onChange(updatedValue);
     };
 
-    const handleCertificationsChange = (newValue: string, index: number) => {
-        const newCertifications = [...certifications];
-        newCertifications[index] = newValue;
-        setCertifications(newCertifications);
-        const updatedValue = { ...value, certifications: newCertifications };
+    const handleCertificationsChange = (newValue: string) => {
+        setCertifications(newValue);
+        const updatedValue = { ...value, certifications: newValue.split(', ').filter(Boolean) };
         onChange(updatedValue);
     }
 
-    const handleSkillsChange = (newValue: string, index: number) => {
-        const newSkills = [...skills];
-        newSkills[index] = newValue;
-        setSkills(newSkills);
-        const updatedValue = { ...value, skills: newSkills };
+    const handleSkillsChange = (newValue: string) => {
+        setSkills(newValue);
+        const updatedValue = { ...value, skills: newValue.split(', ').filter(Boolean) };
         onChange(updatedValue);
-    };
-
-    const addWorkExperience = () => {
-        setWorkExperience([...workExperience, { company: '', position: '', startDate: new Date(), endDate: new Date(), description: [] }]);
-    };
-
-    const addEducation = () => {
-        setEducation([...education, { school: '', degree: '', fieldOfStudy: '', startDate: new Date(), endDate: new Date() }]);
-    };
-
-    const addCertification = () => {
-        setCertifications([...certifications, '']);
-    };
-
-    const addSkill = () => {
-        setSkills([...skills, '']);
     };
 
     // Define the formats for the toolbar
@@ -146,6 +118,7 @@ function ResumeTemplateTextEditor({ value, onChange }: TextEditorProps) {
 
     return (
         <div>
+             <h1 className='font-roboto font-semibold'>Name</h1>
             <ReactQuill
                 theme="snow"
                 ref={quill}
@@ -154,6 +127,7 @@ function ResumeTemplateTextEditor({ value, onChange }: TextEditorProps) {
                 modules={modules}
                 formats={formats}
             />
+            <h1 className='font-roboto font-semibold'>Email</h1>
             <ReactQuill
                 theme="snow"
                 ref={quill}
@@ -162,6 +136,7 @@ function ResumeTemplateTextEditor({ value, onChange }: TextEditorProps) {
                 modules={modules}
                 formats={formats}
             />
+            <h1 className='font-roboto font-semibold'>Phone</h1>
             <ReactQuill
                 theme="snow"
                 ref={quill}
@@ -170,26 +145,39 @@ function ResumeTemplateTextEditor({ value, onChange }: TextEditorProps) {
                 modules={modules}
                 formats={formats}
             />
-            <h2>Work Experience</h2>
-            {workExperience.map((work, index) => (
-                <WorkExperienceForm key={index} value={work} onChange={(newValue) => handleWorkExperienceChange(newValue, index)} />
+            <h1 className='font-roboto font-semibold'>Work Experience</h1>
+            {workExperience.map((experience, index) => (
+                <WorkExperienceForm
+                    key={index}
+                    value={experience}
+                    onChange={(newValue) => handleWorkExperienceChange(newValue, index)}
+                />
             ))}
-            <button onClick={addWorkExperience}>Add Work Experience</button>
-            <h2>Education</h2>
-            {education.map((edu, index) => (
-                <EducationForm key={index} value={edu} onChange={(newValue) => handleEducationChange(newValue, index)} />
+            <h1 className='font-roboto font-semibold'>Education</h1>
+            {education.map((education, index) => (
+                <EducationForm
+                    key={index}
+                    value={education}
+                    onChange={(newValue) => handleEducationChange(newValue, index)}
+                />
             ))}
-            <button onClick={addEducation}>Add Education</button>
-            <h2>Certifications</h2>
-            {certifications.map((cert, index) => (
-                <ReactQuill key={index} theme="snow" value={cert} onChange={(newValue) => handleCertificationsChange(newValue, index)} />
-            ))}
-            <button onClick={addCertification}>Add Certification</button>
-            <h2>Skills</h2>
-            {skills.map((skill, index) => (
-                <ReactQuill key={index} theme="snow" value={skill} onChange={(newValue) => handleSkillsChange(newValue, index)} />
-            ))}
-            <button onClick={addSkill}>Add Skill</button>
+             <h1 className='font-roboto font-semibold'>Certifications</h1>
+            <ReactQuill
+                theme="snow"
+                value={certifications}
+                
+                onChange={handleCertificationsChange}
+                formats={formats}
+                modules={modules}
+            />
+            <h1 className='font-roboto font-semibold'>Skills</h1>
+            <ReactQuill
+                theme="snow"
+                value={skills}
+                onChange={handleSkillsChange}
+                formats={formats}
+                modules={modules}
+            />
         </div>
     );
 }
@@ -202,46 +190,48 @@ interface WorkExperienceFormProps {
 function WorkExperienceForm({ value, onChange }: WorkExperienceFormProps) {
     const [company, setCompany] = useState('');
     const [position, setPosition] = useState('');
-    const [startDate, setStartDate] = useState<Date>(new Date());
-    const [endDate, setEndDate] = useState<Date>(new Date());
-    const [description, setDescription] = useState<string[]>([]);
+    const [startDate, setStartDate] = useState('')
+    const [endDate, setEndDate] = useState('')
+    const [description, setDescription] = useState('')
 
     useEffect(() => {
         setCompany(value.company);
         setPosition(value.position);
         setStartDate(value.startDate);
         setEndDate(value.endDate);
-        setDescription(value.description || []);
+        setDescription(value.description.join(', '));
     }, [value]);
 
     const handleCompanyChange = (newValue: string) => {
-        onChange({ company: newValue });
+        setCompany(newValue);
+       const updatedValue = { ...value, company: newValue };
+        onChange(updatedValue);
     };
 
     const handlePositionChange = (newValue: string) => {
-        onChange({ position: newValue });
+        setPosition(newValue);
+        const updatedValue = { ...value, position: newValue };
+        onChange(updatedValue);
     };
 
-    const handleStartDateChange = (value: string) => {
-        const newValue = new Date(value);
-        onChange({ startDate: newValue });
+    const handleStartDateChange = (newValue: string) => {
+        setStartDate(newValue);
+        const updatedValue = { ...value, startDate: newValue };
+        onChange(updatedValue);
     };
 
-    const handleEndDateChange = (value: string) => {
-        const newValue = new Date(value);
-        onChange({ endDate: newValue });
+    const handleEndDateChange = (newValue: string) => {
+        setEndDate(newValue);
+        const updatedValue = { ...value, endDate: newValue };
+        onChange(updatedValue);
     };
 
-    const handleDescriptionChange = (newValue: string, index: number) => {
-        const newDescription = [...description];
-        newDescription[index] = newValue;
-        setDescription(newDescription);
-        onChange({ description: newDescription });
+    const handleDescriptionChange = (newValue: string) => {
+        setDescription(newValue);
+        const updatedValue = { ...value, description: newValue.split(', ') };   
+        onChange(updatedValue);
     };
 
-    const addDescription = () => {
-        setDescription([...description, '']);
-    };
     // Define the formats for the toolbar
     const formats = ["header","bold","italic","underline","strike","blockquote","list","bullet",
     "indent","link","image","color","clean"];
@@ -269,6 +259,7 @@ function WorkExperienceForm({ value, onChange }: WorkExperienceFormProps) {
 
     return (
         <div>
+                <h1 className='font-roboto font-bold text-sm'>Company</h1>
             <ReactQuill
                 theme="snow"
                 value={company}
@@ -276,6 +267,7 @@ function WorkExperienceForm({ value, onChange }: WorkExperienceFormProps) {
                 formats={formats}
                 modules={modules}
             />
+            <h1 className='font-roboto font-bold text-sm'>Position</h1>
             <ReactQuill
                 theme="snow"
                 value={position}
@@ -283,24 +275,30 @@ function WorkExperienceForm({ value, onChange }: WorkExperienceFormProps) {
                 formats={formats}
                 modules={modules}
             />
+            <h1 className='font-roboto font-bold text-sm'>Start Date</h1>
             <ReactQuill
                 theme="snow"
-                value={startDate.toString()}
+                value={startDate}
                 onChange={handleStartDateChange}
                 formats={formats}
                 modules={modules}
             />
+            <h1 className='font-roboto font-bold text-sm'>End Date</h1>
             <ReactQuill
                 theme="snow"
-                value={endDate.toString()}
+                value={endDate}
                 onChange={handleEndDateChange}
                 formats={formats}
                 modules={modules}
             />
-            {description.map((desc, index) => (
-                <ReactQuill key={index} theme="snow" value={desc} onChange={(newValue) => handleDescriptionChange(newValue, index)} />
-            ))}
-            <button onClick={addDescription}>Add Description</button>
+            <h1 className='font-roboto font-bold text-sm'>Description</h1>
+            <ReactQuill
+                theme="snow"
+                value={description}
+                onChange={handleDescriptionChange}
+                formats={formats}
+                modules={modules}
+            />
         </div>
     );
 }
@@ -314,8 +312,8 @@ function EducationForm({ value, onChange }: EducationFormProps) {
     const [school, setSchool] = useState('');
     const [degree, setDegree] = useState('');
     const [fieldOfStudy, setFieldOfStudy] = useState('');
-    const [startDate, setStartDate] = useState<Date>(new Date());
-    const [endDate, setEndDate] = useState<Date>(new Date());
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
 
     useEffect(() => {
         setSchool(value.school);
@@ -326,25 +324,33 @@ function EducationForm({ value, onChange }: EducationFormProps) {
     }, [value]);
 
     const handleSchoolChange = (newValue: string) => {
-        onChange({ school: newValue });
+        setSchool(newValue);
+        const updatedValue = { ...value, school: newValue };
+        onChange(updatedValue);
     };
 
     const handleDegreeChange = (newValue: string) => {
-        onChange({ degree: newValue });
+        setDegree(newValue);
+        const updatedValue = { ...value, degree: newValue };
+        onChange(updatedValue);
     };
 
     const handleFieldOfStudyChange = (newValue: string) => {
-        onChange({ fieldOfStudy: newValue });
+        setFieldOfStudy(newValue);
+        const updatedValue = { ...value, fieldOfStudy: newValue };
+        onChange(updatedValue);
     };
 
-    const handleStartDateChange = (value: string) => {
-        const newValue = new Date(value);
-        onChange({ startDate: newValue });
+    const handleStartDateChange = (newValue: string) => {
+        setStartDate(newValue);
+        const updatedValue = { ...value, startDate: newValue };
+        onChange(updatedValue);
     };
 
-    const handleEndDateChange = (value: string) => {
-        const newValue = new Date(value);
-        onChange({ endDate: newValue });
+    const handleEndDateChange = (newValue: string) => {
+        setEndDate(newValue);
+        const updatedValue = { ...value, endDate: newValue };
+        onChange(updatedValue);
     };
     // Define the formats for the toolbar
     const formats = ["header","bold","italic","underline","strike","blockquote","list","bullet",
@@ -373,6 +379,7 @@ function EducationForm({ value, onChange }: EducationFormProps) {
 
     return (
         <div>
+             <h1 className='font-roboto font-bold text-sm'>School</h1>
             <ReactQuill
                 theme="snow"
                 value={school}
@@ -380,6 +387,7 @@ function EducationForm({ value, onChange }: EducationFormProps) {
                 formats={formats}
                 modules={modules}
             />
+            <h1 className='font-roboto font-bold text-sm'>Degree</h1>
             <ReactQuill
                 theme="snow"
                 value={degree}
@@ -387,6 +395,7 @@ function EducationForm({ value, onChange }: EducationFormProps) {
                 formats={formats}
                 modules={modules}
             />
+            <h1 className='font-roboto font-bold text-sm'>Field of Study</h1>
             <ReactQuill
                 theme="snow"
                 value={fieldOfStudy}
@@ -394,6 +403,7 @@ function EducationForm({ value, onChange }: EducationFormProps) {
                 formats={formats}
                 modules={modules}
             />
+            <h1 className='font-roboto font-bold text-sm'>Start Date</h1>
             <ReactQuill
                 theme="snow"
                 value={startDate.toString()}
@@ -401,6 +411,7 @@ function EducationForm({ value, onChange }: EducationFormProps) {
                 formats={formats}
                 modules={modules}
             />
+            <h1 className='font-roboto font-bold text-sm'>End Date</h1>
             <ReactQuill
                 theme="snow"
                 value={endDate.toString()}
