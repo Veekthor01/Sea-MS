@@ -4,6 +4,7 @@ import { FaKey, FaSignOutAlt } from 'react-icons/fa';
 import UserBlog from "../templates/blog/userBlog";
 import UserPortfolio from "../templates/portfolio/userPortfolio";
 import UserResume from "../templates/resume/userResume";
+import CheckAuthenticated from "../auth/authMiddleware";
 
 function Dashboard () {
     const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -11,15 +12,17 @@ function Dashboard () {
     const toggleDropdown = () => {
         setDropdownOpen(!dropdownOpen);
     };
+
     return (
         <>
+        <CheckAuthenticated />
         {/*Header*/}
         <div className= 'flex justify-between items-center m-3 p-3'>
     <div className = 'w-44'>
      <Link to='/'><img src='logo-no-background.svg' alt='logo'/></Link>
     </div>
     <div className="font-sans font-semibold leading-normal tracking-wide">
-     <Link to='/templates'><p>Templates</p></Link>
+     <Link to='/template'><p>Templates</p></Link>
     </div>
     
     <div className="mr-16">
