@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
-//import axios from 'axios';
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { toast } from 'react-toastify';
 import { useParams } from 'react-router-dom';
 import UserBlogTextEditor from './userBlogTextEditor';
 import CheckAuthenticated from '../../auth/authMiddleware';
@@ -16,15 +17,34 @@ interface UserBlog {
 }
 
 function EditUserBlog() {
-    const [userBlog, setUserBlog] = useState<UserBlog | null>(null);
+    const [, setUserBlog] = useState<UserBlog | null>(null);
     const { id } = useParams();
 
-    useEffect(() => {
+    /*useEffect(() => {
         // Fetch the existing user blog when the component is mounted
         api.get(`${BACKEND_URL}/userBlog/id/${id}`, { withCredentials: true })
             .then(response => setUserBlog(response.data))
             .catch(error => console.error('Error fetching user blog:', error));
-    }, [id]);
+    }, [id]); */
+
+    const userBlogQuery = useQuery({
+        queryKey: ['userBlog', id],
+        queryFn: async () => {
+            const response = await api.get(`${BACKEND_URL}/userBlog/id/${id}`, { withCredentials: true });
+            const data = await response.data;
+            return data;
+        },
+    });
+
+    if (userBlogQuery.isLoading) return (<h1> Loading...</h1>)
+    if (userBlogQuery.isError) {
+        toast.error('An error occurred. Please try again later.');
+        return;
+    }
+    if (userBlogQuery.isLoadingError) return (<h1> Loading Error...</h1>)// remove later
+
+    // use data from the query
+    const userBlog = userBlogQuery.data;
 
     const handleSave = async () => {
         if (!userBlog) {
@@ -40,12 +60,14 @@ function EditUserBlog() {
             }, { withCredentials: true });
 
             if (response.status === 200) {
-                alert('Blog saved!');
+                toast.success('Blog saved successfully.');
             } else {
                 console.error('Error saving blog:', response.data.message);
+                toast.error('An error occurred. Please try again later.');
             }
         } catch (error) {
             console.error('Error saving blog:', error);
+            toast.error('An error occurred. Please try again later.');
         }
     }
 
