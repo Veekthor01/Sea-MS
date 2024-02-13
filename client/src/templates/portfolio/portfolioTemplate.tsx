@@ -1,8 +1,11 @@
 import { useQuery } from '@tanstack/react-query'
-import axios from 'axios'
+//import axios from 'axios'
 import { Link } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import { ObjectId } from 'mongodb';
 import parser from 'html-react-parser';
+import CheckAuthenticated from '../../auth/authMiddleware';
+import api from '../../auth/refreshMiddleware';
 import '../template.css'
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
@@ -27,7 +30,7 @@ function PortfolioTemplate() {
     const portfolioTemplateQuery = useQuery({
         queryKey: ['portfolioTemplate'],
         queryFn: async () => {
-            const response = await axios.get(`${BACKEND_URL}/portfolioTemplate`);
+            const response = await api.get(`${BACKEND_URL}/portfolioTemplate`, { withCredentials: true });
             const data = await response.data;
             return data;
           },
@@ -35,11 +38,14 @@ function PortfolioTemplate() {
         })
 
     if (portfolioTemplateQuery.isLoading) return (<h1> Loading...</h1>)
-    if (portfolioTemplateQuery.isError) return (<h1> Error: {portfolioTemplateQuery.error.message}</h1>)
+    if (portfolioTemplateQuery.isError) {
+        toast.error('An error occurred. Please try again later.')
+    }
     if (portfolioTemplateQuery.isLoadingError) return (<h1> Loading Error...</h1>)// remove later
 
     return (
       <main className="pt-8 pb-16 lg:pt-8 lg:pb-20 bg-gradient-to-r from-slate-900 to-slate-700 antialiased">
+      <CheckAuthenticated />
       <div className="px-4 mx-auto max-w-screen-xl">
           {portfolioTemplateQuery.data.map((portfolio: PortfolioTemplate) => (
               <div key={portfolio._id.toString()} className="w-full mt-8">

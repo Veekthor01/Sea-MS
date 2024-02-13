@@ -1,6 +1,7 @@
 import { useCallback, useRef, useMemo, useState, useEffect } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import { toast } from 'react-toastify';
 import axios from 'axios';
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
@@ -100,9 +101,13 @@ function PortfolioTemplateTextEditor({ value, onChange }: TextEditorProps) {
                 quillEditor.deleteText(range.index, 1);
                 quillEditor.insertEmbed(range.index, "image", uploadedImageUrl, "user");
               } else {
-                console.error('Error uploading image:', response.data.message);
+                if (response.status === 500) {
+                    toast.error('Something went wrong. Please try again later.');
+                } else {
+                    toast.error(`Error uploading image: ${response.data.message}`);
+                }
                 quillEditor.deleteText(range.index, 1);
-              }
+            }
             }
           };
           reader.readAsDataURL(file);
