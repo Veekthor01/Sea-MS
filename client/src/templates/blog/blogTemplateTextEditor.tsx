@@ -2,6 +2,7 @@ import { useCallback, useRef, useMemo, useState, useEffect } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -75,16 +76,19 @@ const handleAuthorChange = (newValue: string) => {
                 headers: { 'Content-Type': 'multipart/form-data' },
               });
               if (response.status === 200) {
-                console.log('Image uploaded!');
-                alert('Image uploaded!');
+                toast.success('Image uploaded successfully');
                 // Replace the Data URL with the URL of the uploaded image
                 const uploadedImageUrl = response.data.publicUrl; // Adjust this line based on the actual structure of your response
                 quillEditor.deleteText(range.index, 1);
                 quillEditor.insertEmbed(range.index, "image", uploadedImageUrl, "user");
               } else {
-                console.error('Error uploading image:', response.data.message);
+                if (response.status === 500) {
+                    toast.error('Something went wrong. Please try again later.');
+                } else {
+                    toast.error(`${response.data.message}`);
+                }
                 quillEditor.deleteText(range.index, 1);
-              }
+            }
             }
           };
           reader.readAsDataURL(file);

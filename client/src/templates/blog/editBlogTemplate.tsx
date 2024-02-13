@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
-//import axios from 'axios';
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query'
 import { useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import BlogTemplateTextEditor from './blogTemplateTextEditor';
 import CheckAuthenticated from '../../auth/authMiddleware';
 import api from '../../auth/refreshMiddleware';
@@ -16,16 +17,35 @@ interface BlogTemplate {
 }
 
 function EditBlogTemplate() {
-  const [template, setTemplate] = useState<BlogTemplate | null>(null);
+  const [, setTemplate] = useState<BlogTemplate | null>(null);
   const [, setUserBlogId] = useState<string | null>(null);
   const { id } = useParams();
 
-  useEffect(() => {
+ /* useEffect(() => {
     // Fetch the existing blog template when the component is mounted
     api.get(`${BACKEND_URL}/blogTemplate/id/${id}`, { withCredentials: true })
       .then(response => setTemplate(response.data))
       .catch(error => console.error('Error fetching blog template:', error));
-  }, [id]);
+  }, [id]); */
+
+  const editBlogTemplateQuery = useQuery({
+    queryKey: ['blogTemplate', id],
+    queryFn: async () => {
+      const response = await api.get(`${BACKEND_URL}/blogTemplate/id/${id}`, { withCredentials: true });
+      const data = await response.data;
+      return data;
+    },
+  });
+
+  if (editBlogTemplateQuery.isLoading) return (<h1> Loadingg...</h1>)
+  if (editBlogTemplateQuery.isError) {
+    toast.error('An error occurred. Please try again later.');
+    return;
+  }
+  if (editBlogTemplateQuery.isLoadingError) return (<h1> Loading Error...</h1>)// remove later
+
+  //setTemplate(editBlogTemplateQuery.data);
+  const template = editBlogTemplateQuery.data;
 
   const handleSave = async () => {
     if (!template) {
@@ -47,12 +67,14 @@ function EditBlogTemplate() {
       { withCredentials: true });
   
       if (responseUpdate.status === 200) {
-        alert('Blog saved!');
+        toast.success('Blog saved successfully!!');
       } else {
-        console.error('Error saving blog:', responseUpdate.data.message);
+        const errorMessage = responseUpdate.data.message || 'An error occurred. Please try again later.';
+        toast.error(`${errorMessage}`);
       }
     } catch (error) {
       console.error('Error saving blog:', error);
+      toast.error('An error occurred. Please try again later.');
     }
   };
 

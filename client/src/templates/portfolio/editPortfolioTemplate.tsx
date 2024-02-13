@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
-//import axios from 'axios';
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query'
+import { toast } from 'react-toastify';
 import { useParams } from 'react-router-dom';
 import PortfolioTemplateTextEditor from './portfolioTemplateTextEditor';
 import CheckAuthenticated from '../../auth/authMiddleware';
@@ -24,16 +25,35 @@ interface PortfolioTemplate {
 }
 
 function EditPortfolioTemplate() {
-    const [template, setTemplate] = useState<PortfolioTemplate | null>(null);
+    const [, setTemplate] = useState<PortfolioTemplate | null>(null);
     const [, setUserPortfolioId] = useState<string | null>(null);
     const { id } = useParams();
 
-    useEffect(() => {
+    /*useEffect(() => {
         // Fetch the existing portfolio template when the component is mounted
         api.get(`${BACKEND_URL}/portfolioTemplate/id/${id}`, { withCredentials: true })
             .then(response => setTemplate(response.data))
             .catch(error => console.error('Error fetching portfolio template:', error));
-    }, [id]);
+    }, [id]); */
+
+    const editPortfolioTemplateQuery = useQuery({
+        queryKey: ['portfolioTemplate', id],
+        queryFn: async () => {
+            const response = await api.get(`${BACKEND_URL}/portfolioTemplate/id/${id}`, { withCredentials: true });
+            const data = await response.data;
+            return data;
+        },
+    });
+
+    if (editPortfolioTemplateQuery.isLoading) return (<h1> Loading...</h1>)
+    if (editPortfolioTemplateQuery.isError) {
+        toast.error('An error occurred. Please try again later.');
+        return;
+    }
+    if (editPortfolioTemplateQuery.isLoadingError) return (<h1> Loading Error...</h1>)// remove later
+
+    //setTemplate(editPortfolioTemplateQuery.data);
+    const template = editPortfolioTemplateQuery.data;
 
     const handleSave = async () => {
         if (!template) {
@@ -54,12 +74,14 @@ function EditPortfolioTemplate() {
             }, { withCredentials: true });
 
             if (responseUpdate.status === 200) {
-                alert('Portfolio saved!');
+                toast.success('Portfolio saved successfully!')
             } else {
-                console.error('Error saving portfolio:', responseUpdate.data.message);
+                const errorMessage = responseUpdate.data.message || 'An error occurred. Please try again later.';
+                toast.error(`${errorMessage}`);
             }
         } catch (error) {
-            console.error('Error saving portfolio:', error);
+            console.error('Error saving resume:', error);
+            toast.error('An error occurred. Please try again later.');
         }
     }
 
