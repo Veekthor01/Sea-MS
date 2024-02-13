@@ -1,4 +1,6 @@
 import React from 'react'
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createBrowserRouter, createRoutesFromElements, Outlet, Route, RouterProvider } from "react-router-dom";
 import Home from './pages/home';
@@ -21,6 +23,7 @@ import PortfolioURLPage from './user/portfolio/userPortfolioURL';
 import ResumeURLPage from './user/resume/userResumeURL';
 import SignupPage from './auth/signup';
 import LoginPage from './auth/login';
+import ChangePasswordForm from './auth/changePassword';
 
 const queryClient = new QueryClient();
 
@@ -47,6 +50,7 @@ const routes = createRoutesFromElements(
   <Route path="/resume/:name" element={<ResumeURLPage />} />
   <Route path="/signup" element={<SignupPage />} />
   <Route path="/login" element={<LoginPage />} />
+  <Route path="/changepassword" element={<ChangePasswordForm />} />
   </React.Fragment>
 );
 
@@ -59,6 +63,7 @@ function App() {
       router={createBrowserRouter(routes)} 
       fallbackElement={<div>Loading...</div>}>
       </RouterProvider>
+      <ToastContainer />
       <Outlet />{/* used in parent route elements to render their child route elements.*/}
       </QueryClientProvider>
     </>

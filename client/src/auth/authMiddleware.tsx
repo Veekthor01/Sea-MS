@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-//import axios from 'axios';
+import { toast } from 'react-toastify';
 import api from './refreshMiddleware';
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
@@ -17,6 +17,7 @@ function CheckAuthenticated() {
                 if (response.status === 200) {
                     setIsLoading(false);
                 } else {
+                    toast.error('Please log in to continue.');
                     navigate('/login');
                 }
             } catch (error) {
