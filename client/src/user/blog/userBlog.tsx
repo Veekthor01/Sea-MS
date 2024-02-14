@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import parser from 'html-react-parser';
 import CheckAuthenticated from '../../auth/authMiddleware';
 import api from '../../auth/refreshMiddleware';
+import LoaderSpinner from '../../components/loading';
 import '../../templates/template.css';
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
@@ -17,22 +18,8 @@ interface UserBlog {
     updatedAt?: Date;
 }
 
+// User Blog Pages
 function UserBlog () {
-    //const [userBlog, setUserBlog] = useState<UserBlog[] | null>(null);
-
-    /*useEffect(() => {
-        const fetchUserBlog = async () => {
-          try {
-            const response = await api.get(`${BACKEND_URL}/userBlog`, { withCredentials: true });
-            setUserBlog(response.data);
-          } catch (error) {
-            console.error('Error fetching user blog:', error);
-          }
-        };
-      
-        fetchUserBlog();
-      }, []); */ 
-
       const userBlogQuery = useQuery({
         queryKey: ['userBlog'],
         queryFn: async () => {
@@ -42,12 +29,11 @@ function UserBlog () {
         },
       });
 
-      if (userBlogQuery.isLoading) return (<h1> Loading...</h1>)
+      if (userBlogQuery.isLoading) return <LoaderSpinner />;
       if (userBlogQuery.isError) {
         toast.error('An error occurred. Please try again later.');
         return;
       }
-      if (userBlogQuery.isLoadingError) return (<h1> Loading Error...</h1>)// remove later
 
       const userBlog = userBlogQuery.data;
 

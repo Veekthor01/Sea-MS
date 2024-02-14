@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import parser from 'html-react-parser';
+import LoaderSpinner from '../../components/loading';
 import '../../templates/template.css';
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
@@ -19,25 +20,6 @@ interface UserBlog {
 
 function BlogURLPage() {
     const [, setBlogNames] = useState<string[]>([]);
-    //const [blog, setBlog] = useState<UserBlog[] | null>(null);
-
-    /*useEffect(() => {
-        const fetchUserBlog = async () => {
-          try {
-            const response = await axios.get(`${BACKEND_URL}/userBlog`);
-            setBlog(response.data);
-
-            // Extract the names of the blogs
-            const names = response.data.map((blog: UserBlog) => blog.name);
-            setBlogNames(names);
-          } catch (error) {
-            console.error('Error fetching user blog:', error);
-          }
-        };
-      
-        fetchUserBlog();
-      }, []); */
-
       const blogQuery = useQuery({
         queryKey: ['userBlog'],
         queryFn: async () => {
@@ -47,12 +29,11 @@ function BlogURLPage() {
         },
       });
 
-      if (blogQuery.isLoading) return (<h1> Loading...</h1>)
+      if (blogQuery.isLoading) return <LoaderSpinner />;
       if (blogQuery.isError) {
         toast.error('An error occurred. Please try again later.');
         return;
       }
-      if (blogQuery.isLoadingError) return (<h1> Loading Error...</h1>)// remove later
 
       // use data from the query
       const blog = blogQuery.data;

@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom';
 import UserBlogTextEditor from './userBlogTextEditor';
 import CheckAuthenticated from '../../auth/authMiddleware';
 import api from '../../auth/refreshMiddleware';
+import LoaderSpinner from '../../components/loading';
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -16,16 +17,10 @@ interface UserBlog {
     author: string;
 }
 
+// Edit user blog
 function EditUserBlog() {
     const [, setUserBlog] = useState<UserBlog | null>(null);
     const { id } = useParams();
-
-    /*useEffect(() => {
-        // Fetch the existing user blog when the component is mounted
-        api.get(`${BACKEND_URL}/userBlog/id/${id}`, { withCredentials: true })
-            .then(response => setUserBlog(response.data))
-            .catch(error => console.error('Error fetching user blog:', error));
-    }, [id]); */
 
     const userBlogQuery = useQuery({
         queryKey: ['userBlog', id],
@@ -36,12 +31,11 @@ function EditUserBlog() {
         },
     });
 
-    if (userBlogQuery.isLoading) return (<h1> Loading...</h1>)
+    if (userBlogQuery.isLoading) return <LoaderSpinner />;
     if (userBlogQuery.isError) {
         toast.error('An error occurred. Please try again later.');
         return;
     }
-    if (userBlogQuery.isLoadingError) return (<h1> Loading Error...</h1>)// remove later
 
     // use data from the query
     const userBlog = userBlogQuery.data;
@@ -91,7 +85,7 @@ function EditUserBlog() {
             <UserBlogTextEditor value={userBlog} onChange={ handleUserBlogChange} />
           </>
         ) : (
-          <p>Loading...</p>
+          <p>Wait a minute...</p>
         )}
       </div>
     );

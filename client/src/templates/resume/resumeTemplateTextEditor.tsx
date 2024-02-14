@@ -34,7 +34,7 @@ interface TextEditorProps {
     onChange: (template: Partial<ResumeTemplate>) => void;
 }
 
-
+// Resume Template Text Editor
 function ResumeTemplateTextEditor({ value, onChange }: TextEditorProps) {
     const quill = useRef<ReactQuill>(null);
     const [author, setAuthor] = useState(value.author);

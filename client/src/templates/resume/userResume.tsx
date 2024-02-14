@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import parser from 'html-react-parser';
 import CheckAuthenticated from '../../auth/authMiddleware';
 import api from '../../auth/refreshMiddleware';
+import LoaderSpinner from '../../components/loading';
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -36,24 +37,9 @@ interface UserResume {
   skills: string[];
 }
 
+// Resume after created from a template
 function UserResume () {
-    //const [userResume, setUserResume] = useState<UserResume[] | null>(null);
-
-    /*useEffect(() => {
-        const fetchUserResume = async () => {
-          try {
-            const response = await axios.get(`${BACKEND_URL}/userResume/user`, 
-            { withCredentials: true });
-            setUserResume(response.data);
-          } catch (error) {
-            console.error('Error fetching user resume:', error);
-          }
-        };
-      
-        fetchUserResume();
-      }, []); */
-
-      const userResumeQuery = useQuery({
+  const userResumeQuery = useQuery({
         queryKey: ['userResume'],
         queryFn: async () => {
           const response = await api.get(`${BACKEND_URL}/userResume/user`, { withCredentials: true });
@@ -62,14 +48,11 @@ function UserResume () {
         },
       });
 
-      if (userResumeQuery.isLoading) return (<h1> Loading...</h1>)
+      if (userResumeQuery.isLoading) return <LoaderSpinner />;
       if (userResumeQuery.isError) {
         toast.error('An error occurred. Please try again later.');
         return;
       }
-      if (userResumeQuery.isLoadingError) return (<h1> Loading Error...</h1>)// remove later
-
-      //setUserResume(userResumeQuery.data);
       const userResume = userResumeQuery.data;
 
     return (
