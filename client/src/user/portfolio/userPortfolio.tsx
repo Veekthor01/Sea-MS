@@ -1,8 +1,9 @@
-import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query'
+import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import axios from 'axios';
 import parser from 'html-react-parser';
+import CheckAuthenticated from '../../auth/authMiddleware';
+import api from '../../auth/refreshMiddleware';
 import LoaderSpinner from '../../components/loading';
 import '../../templates/template.css';
 
@@ -24,37 +25,39 @@ interface Projects {
     projects: Projects[];
   }
 
-  // User Portfolio URL Page
-  function PortfolioURLPage () {
-    const [, setPortfolioNames] = useState<string[]>([]);
-    
-    const portfolioQuery = useQuery({
+  // User Portfolio Page
+function UserPortfolio () {
+  const userPortfolioQuery = useQuery({
         queryKey: ['userPortfolio'],
         queryFn: async () => {
-          const response = await axios.get(`${BACKEND_URL}/userPortfolio`, { withCredentials: true });
+          const response = await api.get(`${BACKEND_URL}/userPortfolio`, { withCredentials: true });
           const data = await response.data;
           return data;
         },
       });
 
-      if (portfolioQuery.isLoading) return <LoaderSpinner />;
-      if (portfolioQuery.isError) {
+      if (userPortfolioQuery.isLoading) return <LoaderSpinner />;
+      if (userPortfolioQuery.isError) {
         toast.error('An error occurred. Please try again later.');
         return;
       }
 
       // use data from the query
-      const portfolio = portfolioQuery.data;
+      const userPortfolio = userPortfolioQuery.data;
 
-      //Extract the names of the portfolios
-      const names = portfolio.map((portfolio: UserPortfolio) => portfolio.name);
-      setPortfolioNames(names);
-
-      return (
-      <main className="pt-8 pb-16 lg:pt-8 lg:pb-20 bg-gradient-to-r from-slate-900 to-slate-700 antialiased">
+    return (
+       <main className="pt-8 pb-16 lg:pt-8 lg:pb-20 bg-gradient-to-r from-slate-900 to-slate-700 antialiased">
+      <CheckAuthenticated />
       <div className="px-4 mx-auto max-w-screen-xl">
-        {portfolio && portfolio.map((portfolio: UserPortfolio) => (
+        {userPortfolio && userPortfolio.map((portfolio: UserPortfolio) => (
             <div key={portfolio._id} className="w-full mt-8">
+            <div className="flex justify-end">
+                <Link to={`/edituserportfolio/${portfolio._id}`}>
+                    <button className="font-roboto font-semiboldfont-roboto font-semibold border border-white text-white px-2 py-1 rounded hover:bg-white hover:text-black transition-colors duration-200">
+                    Edit Portfolio
+                    </button>
+                </Link>
+            </div>
             <div className="px-6 py-2 text-xl text-white text-center font-sans font-bold leading-normal tracking-wide">
                   {parser(portfolio.author)}
                   </div>
@@ -96,7 +99,7 @@ interface Projects {
           </div>
           
         </main>
-      );
+      )
 }
 
-export default PortfolioURLPage;
+export default UserPortfolio;

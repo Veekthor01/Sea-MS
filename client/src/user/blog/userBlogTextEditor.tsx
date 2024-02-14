@@ -42,6 +42,7 @@ interface TextEditorProps {
   onChange: (userBlog: Partial<UserBlog>) => void;
 }
 
+// User Blog Text Editor
 function UserBlogTextEditor({ value, onChange }: TextEditorProps) {
   const quill = useRef<ReactQuill>(null);
   const [name, setName] = useState('');

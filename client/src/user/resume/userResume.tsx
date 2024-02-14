@@ -1,7 +1,10 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useQuery } from '@tanstack/react-query'
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import parser from 'html-react-parser';
+import CheckAuthenticated from '../../auth/authMiddleware';
+import api from '../../auth/refreshMiddleware';
+import LoaderSpinner from '../../components/loading';
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -34,24 +37,29 @@ interface UserResume {
 }
 
 
+// User Resume Page
 function UserResume () {
-    const [userResume, setUserResume] = useState<UserResume[] | null>(null);
-
-    useEffect(() => {
-        const fetchUserResume = async () => {
-          try {
-            const response = await axios.get(`${BACKEND_URL}/userResume`);
-            setUserResume(response.data);
-          } catch (error) {
-            console.error('Error fetching user resume:', error);
+    const userResumeQuery = useQuery({
+            queryKey: ['userResume'],
+            queryFn: async () => {
+              const response = await api.get(`${BACKEND_URL}/userResume`, { withCredentials: true });
+              const data = await response.data;
+              return data;
+            },
+          });
+    
+          if (userResumeQuery.isLoading) return <LoaderSpinner />;
+          if (userResumeQuery.isError) {
+            toast.error('An error occurred. Please try again later.');
+            return;
           }
-        };
-      
-        fetchUserResume();
-      }, []);
+    
+          // use data from the query
+          const userResume = userResumeQuery.data;
 
     return (
          <div className="bg-white p-6">
+        <CheckAuthenticated />
         {userResume && userResume.map((resume: UserResume) => (
             <div key={resume._id} className="mb-4">
             <div className="flex justify-end">
@@ -115,6 +123,6 @@ function UserResume () {
             ))}
         </div>
     )
-}
+};
 
 export default UserResume;
