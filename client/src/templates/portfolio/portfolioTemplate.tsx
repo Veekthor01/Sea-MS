@@ -1,11 +1,11 @@
 import { useQuery } from '@tanstack/react-query'
-//import axios from 'axios'
 import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { ObjectId } from 'mongodb';
 import parser from 'html-react-parser';
 import CheckAuthenticated from '../../auth/authMiddleware';
 import api from '../../auth/refreshMiddleware';
+import LoaderSpinner from '../../components/loading';
 import '../template.css'
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
@@ -26,6 +26,7 @@ interface PortfolioTemplate {
   projects: Projects[];
 }
 
+// Portfolio Template Page
 function PortfolioTemplate() {
     const portfolioTemplateQuery = useQuery({
         queryKey: ['portfolioTemplate'],
@@ -34,14 +35,13 @@ function PortfolioTemplate() {
             const data = await response.data;
             return data;
           },
-            //staleTime: 1000 * 60 * 2, // 2 minutes or set to 0 for no caching or Infinity for no re-fetching
-        })
+          staleTime: 1000 * 60 * 30,
+        });
 
-    if (portfolioTemplateQuery.isLoading) return (<h1> Loading...</h1>)
+    if (portfolioTemplateQuery.isLoading) return <LoaderSpinner />
     if (portfolioTemplateQuery.isError) {
         toast.error('An error occurred. Please try again later.')
     }
-    if (portfolioTemplateQuery.isLoadingError) return (<h1> Loading Error...</h1>)// remove later
 
     return (
       <main className="pt-8 pb-16 lg:pt-8 lg:pb-20 bg-gradient-to-r from-slate-900 to-slate-700 antialiased">
@@ -101,12 +101,3 @@ function PortfolioTemplate() {
 }
 
 export default PortfolioTemplate
-{/*<Link to={`/editPortfolioTemplate/${portfolioTemplateQuery.data[0]._id}`} 
-className="inline-block px-6 py-3 mt-8 text-xs font-medium leading-6 text-center
- text-white uppercase transition
-  bg-blue-600 rounded shadow ripple hover:shadow-lg
-   hover:bg-blue-800 focus:outline-none">Edit</Link> 
-  // <h2 className="px-6 py-4 text-xl font-bold text-gray-900 dark:text-white">
-                  {portfolio.name}
-                  </h2>
-  */}

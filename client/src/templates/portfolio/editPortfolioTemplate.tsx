@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom';
 import PortfolioTemplateTextEditor from './portfolioTemplateTextEditor';
 import CheckAuthenticated from '../../auth/authMiddleware';
 import api from '../../auth/refreshMiddleware';
+import LoaderSpinner from '../../components/loading';
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -24,17 +25,11 @@ interface PortfolioTemplate {
     projects: Projects[];
 }
 
+// Edit Portfolio Template Page
 function EditPortfolioTemplate() {
     const [, setTemplate] = useState<PortfolioTemplate | null>(null);
     const [, setUserPortfolioId] = useState<string | null>(null);
     const { id } = useParams();
-
-    /*useEffect(() => {
-        // Fetch the existing portfolio template when the component is mounted
-        api.get(`${BACKEND_URL}/portfolioTemplate/id/${id}`, { withCredentials: true })
-            .then(response => setTemplate(response.data))
-            .catch(error => console.error('Error fetching portfolio template:', error));
-    }, [id]); */
 
     const editPortfolioTemplateQuery = useQuery({
         queryKey: ['portfolioTemplate', id],
@@ -45,14 +40,12 @@ function EditPortfolioTemplate() {
         },
     });
 
-    if (editPortfolioTemplateQuery.isLoading) return (<h1> Loading...</h1>)
+    if (editPortfolioTemplateQuery.isLoading) return <LoaderSpinner />;
     if (editPortfolioTemplateQuery.isError) {
         toast.error('An error occurred. Please try again later.');
         return;
     }
-    if (editPortfolioTemplateQuery.isLoadingError) return (<h1> Loading Error...</h1>)// remove later
 
-    //setTemplate(editPortfolioTemplateQuery.data);
     const template = editPortfolioTemplateQuery.data;
 
     const handleSave = async () => {
@@ -105,7 +98,7 @@ function EditPortfolioTemplate() {
                     <PortfolioTemplateTextEditor value={template} onChange={handleTemplateChange} />
                 </>
             ) : (
-                <h1>Loading...</h1>
+                <h1>Wait a minute...</h1>
             )}
         </div>
     );

@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom';
 import ResumeTemplateTextEditor from './resumeTemplateTextEditor';
 import CheckAuthenticated from '../../auth/authMiddleware';
 import api from '../../auth/refreshMiddleware';
+import LoaderSpinner from '../../components/loading';
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -36,17 +37,11 @@ interface ResumeTemplate {
     skills: string[];
 }
 
+// Edit Resume Template Page
 function EditResumeTemplate() {
     const [, setTemplate] = useState<ResumeTemplate | null>(null);
     const [, setUserResumeId] = useState<string | null>(null);
     const { id } = useParams();
-
-    /*useEffect(() => {
-        // Fetch the existing resume template when the component is mounted
-        api.get(`${BACKEND_URL}/resumeTemplate/id/${id}`, { withCredentials: true })
-            .then(response => setTemplate(response.data))
-            .catch(error => console.error('Error fetching resume template:', error));
-    }, [id]); */
 
     const editResumeTemplateQuery = useQuery({
         queryKey: ['resumeTemplate', id],
@@ -57,14 +52,13 @@ function EditResumeTemplate() {
         },
     });
 
-    if (editResumeTemplateQuery.isLoading) return (<h1> Loading...</h1>)
+    if (editResumeTemplateQuery.isLoading) return <LoaderSpinner />;
     if (editResumeTemplateQuery.isError) {
         toast.error('An error occurred. Please try again later.');
         return;
     }
     if (editResumeTemplateQuery.isLoadingError) return (<h1> Loading Error...</h1>)// remove later
 
-    //setTemplate(editResumeTemplateQuery.data);
     const template = editResumeTemplateQuery.data;
 
     const handleSave = async () => {
@@ -121,7 +115,7 @@ function EditResumeTemplate() {
                     <ResumeTemplateTextEditor value={template} onChange={handleTemplateChange} />
                 </>
             ) : (
-                <h1>Loading...</h1>
+                <h1>Wait a minute...</h1>
             )}
         </div>
         </div>

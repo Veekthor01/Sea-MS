@@ -26,6 +26,7 @@ interface TextEditorProps {
     onChange: (template: Partial<PortfolioTemplate>) => void;
 }
 
+// Portfolio Template Text Editor
 function PortfolioTemplateTextEditor({ value, onChange }: TextEditorProps) {
     const quill = useRef<ReactQuill>(null);
     const [author, setAuthor] = useState('');

@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import {ObjectId} from 'mongodb';
 import CheckAuthenticated from '../../auth/authMiddleware';
 import api from '../../auth/refreshMiddleware';
+import LoaderSpinner from '../../components/loading';
 import '../template.css'
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
@@ -36,6 +37,7 @@ interface ResumeTemplate {
     skills: string[];
 }
 
+// Resume Template Page
 function ResumeTemplate() {
     const resumeTemplateQuery = useQuery({
         queryKey: ['resumeTemplate'],
@@ -44,15 +46,14 @@ function ResumeTemplate() {
             const data = await response.data;
             return data;
           },
-            //staleTime: 1000 * 60 * 2, // 2 minutes or set to 0 for no caching or Infinity for no re-fetching
+          staleTime: 1000 * 60 * 30,
         })
 
-    if (resumeTemplateQuery.isLoading) return (<h1> Loading...</h1>)
+    if (resumeTemplateQuery.isLoading) return <LoaderSpinner />;
     if (resumeTemplateQuery.isError) {
         toast.error('An error occurred. Please try again later.');
         return;
     }
-    if (resumeTemplateQuery.isLoadingError) return (<h1> Loading Error...</h1>)
 
     return (
         <div className="bg-white p-6">
@@ -118,4 +119,3 @@ function ResumeTemplate() {
 }
 
 export default ResumeTemplate
-// <Link to={`/editResumeTemplate/${resumeTemplateQuery.data[0]._id}`}>Edit</Link>
