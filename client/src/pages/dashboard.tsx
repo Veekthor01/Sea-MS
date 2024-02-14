@@ -1,16 +1,29 @@
 import { Link } from "react-router-dom";
 import { useState } from 'react';
+import { useNavigate } from "react-router-dom";
 import { FaKey, FaSignOutAlt } from 'react-icons/fa';
 import UserBlog from "../templates/blog/userBlog";
 import UserPortfolio from "../templates/portfolio/userPortfolio";
 import UserResume from "../templates/resume/userResume";
 import CheckAuthenticated from "../auth/authMiddleware";
+import Logout from "../auth/logout";
 
 function Dashboard () {
     const [dropdownOpen, setDropdownOpen] = useState(false);
+    const navigate = useNavigate();
 
     const toggleDropdown = () => {
         setDropdownOpen(!dropdownOpen);
+    };
+
+    // Logout user
+    const logoutUser = async () => {
+        try {
+            await Logout();
+            navigate('/');
+        } catch (error) {
+            console.error('Error logging out:', error);
+        }
     };
 
     return (
@@ -34,8 +47,8 @@ function Dashboard () {
                     <Link to='/changepassword' className="flex items-center mb-4">
                         <FaKey /> <p className="ml-2 font-roboto font-medium">Change Password</p>
                     </Link>
-                    <Link to='/logout' className="flex items-center">
-                        <FaSignOutAlt /> <p className="ml-2">Logout</p>
+                    <Link to='#' className="flex items-center">
+                        <FaSignOutAlt /> <p className="ml-2" onClick={logoutUser}>Logout</p>
                     </Link>
                 </div>
             )}

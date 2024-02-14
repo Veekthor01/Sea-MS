@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import { ObjectId } from 'mongodb';
 import CheckAuthenticated from '../../auth/authMiddleware';
 import api from '../../auth/refreshMiddleware';
+import LoaderSpinner from '../../components/loading';
 import '../template.css'
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
@@ -19,6 +20,7 @@ interface BlogTemplate {
     updatedAt?: Date;
 }
 
+// Blog Template Page
 function BlogTemplate() {
     const blogTemplateQuery = useQuery({
         queryKey: ['blogTemplate'],
@@ -27,14 +29,13 @@ function BlogTemplate() {
             const data = await response.data;
             return data;
           },
-            //staleTime: 1000 * 60 * 2, // 2 minutes or set to 0 for no caching or Infinity for no re-fetching
+          staleTime: 1000 * 60 * 30,
         })
 
-    if (blogTemplateQuery.isLoading) return (<h1> Loading...</h1>)
+    if (blogTemplateQuery.isLoading) return <LoaderSpinner />
     if (blogTemplateQuery.isError) {
         toast.error('An error occurred. Please try again later.')
     }
-    if (blogTemplateQuery.isLoadingError) return (<h1> Loading Error...</h1>)// remove later
 
     return (
         <main className="pt-8 pb-16 lg:pt-12 lg:pb-20 bg-white dark:bg-gray-900 antialiased">
@@ -80,8 +81,3 @@ function BlogTemplate() {
 }
 
 export default BlogTemplate
- {/*remove link later and add to template page 
- <Link to={`/editblogtemplate/${blog._id}`} 
- className="inline-block px-6 py-3 text-xs font-medium leading-6 text-center
-  text-white uppercase transition bg-blue-600 rounded shadow ripple 
-  hover:shadow-lg hover:bg-blue-800 focus:outline-none">Edit</Link>  */}

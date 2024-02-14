@@ -1,4 +1,3 @@
-
 function Products() {
     return (
         <div className="bg-violet-800 p-8">

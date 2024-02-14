@@ -6,6 +6,7 @@ import CheckAuthenticated from "../auth/authMiddleware";
 function Template() {
     const navigate = useNavigate();
 
+    // Logout user
     const logoutUser = async () => {
         try {
             await Logout();
@@ -14,7 +15,7 @@ function Template() {
             console.error('Error logging out:', error);
         }
     };
-
+    
     return (
         <>
         <CheckAuthenticated />
@@ -25,9 +26,6 @@ function Template() {
                 </div>
                 <div className="font-sans font-semibold leading-normal tracking-wide">
                     <Link to='/dashboard'><p>Dashboard</p></Link>
-                </div>
-                <div className="font-sans font-semibold leading-normal tracking-wide">
-                    <Link to='/premiumTemplate'><p>Premium Templates</p></Link>
                 </div>
                 <div className='font-sans font-semibold flex justify-between items-center leading-normal tracking-wide'>
                     <Link to='#' onClick={logoutUser}><p>Logout</p></Link>
@@ -43,7 +41,7 @@ function Template() {
                 <div className="w-1/3 flex flex-col rounded-lg overflow-hidden bg-white shadow-md hover:shadow-lg transition duration-300">
                     <div className="p-4">
                         <h1 className="text-lg font-sans font-bold mb-2">Blog</h1>
-                        <img src='/t.blog.webp' alt='blog' />
+                        <img src='/t.blog.webp' alt='blog' loading='lazy' />
                     </div>
                     <div className="flex justify-center items-center p-4 mt-auto">
                     <Link to='/blogtemplate'>
@@ -59,7 +57,7 @@ function Template() {
                         <h1 className="text-lg font-sans font-bold mb-2">
                             Portfolio
                             </h1>
-                        <img src='/t.portfolio.webp' alt='portfolio' />
+                        <img src='/t.portfolio.webp' alt='portfolio' loading='lazy' />
                     </div>
                     <div className="flex justify-center items-center p-4 mt-auto">
                     <Link to='/portfoliotemplate'>
@@ -75,7 +73,7 @@ function Template() {
                         <h1 className="text-lg font-sans font-bold mb-2">
                             Resume
                             </h1>
-                        <img src='/t.resume.webp' alt='resume' />
+                        <img src='/t.resume.webp' alt='resume' loading='lazy' />
                     </div>
                     <div className="flex justify-center items-center p-4 mt-auto">
                     <Link to='/resumetemplate'>

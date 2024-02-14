@@ -18,19 +18,22 @@ interface TextEditorProps {
   onChange: (template: Partial<BlogTemplate>) => void;
 }
 
+// Blog Template Text Editor
 function BlogTemplateTextEditor({ value, onChange }: TextEditorProps) {
+  // Create a reference for the Quill instance
  const quill = useRef<ReactQuill>(null);
  const [editorContent, setEditorContent] = useState('');
  const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
 
+  // Set the initial value of the text editor
  useEffect(() => {
   setEditorContent(value.content);
   setTitle(value.title);
   setAuthor(value.author);
 }, [value]);
 
- 
+ // Define the function to handle changes in the text editor
  const handleValueChange = (newValue: string) => {
   setEditorContent(newValue);
   const updatedValue = { ...value, content: newValue };
@@ -189,35 +192,3 @@ const handleAuthorChange = (newValue: string) => {
 }
 
 export default BlogTemplateTextEditor;
-/* const removeImage = () => {
-    if (quill.current) {
-      const quillEditor = quill.current.getEditor();
-      const range = quillEditor.getSelection();
-      if (range) {
-        if (range.length == 0) {
-          const [leaf] = quillEditor.getLeaf(range.index);
-          if (leaf) {
-            const formats = leaf.formats();
-            if (formats.image) {
-              quillEditor.deleteText(range.index, 1);
-            }
-          }
-        } else {
-          const [leaf] = quillEditor.getLeaf(range.index + range.length);
-          if (leaf) {
-            const formats = leaf.formats();
-            if (formats.image) {
-              quillEditor.deleteText(range.index, range.length);
-            }
-          }
-        }
-      }
-    }
-  };
-  That's great! The code you used is a simplified version of the removeImage function. 
-  It assumes that the current selection is an image and directly deletes it. 
-  This will work fine if you ensure that the user only clicks the "Remove Image" button 
-  when an image is selected. If the user clicks the button when the selection is not an image, 
-  it will delete the character at the current selection. 
-  If this behavior is acceptable in your application, then your simplified code is a good solution.
-  */

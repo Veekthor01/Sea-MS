@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
-import TemplateCarousel from "../components/templateCarousel";
-import Products from "../components/product";
+import React, { Suspense } from "react";
 import Footer from "../components/footer";
+import LoaderSpinner from "../components/loading";
+
+const TemplateCarousel = React.lazy(() => import('../components/templateCarousel'));
+const Products = React.lazy(() => import('../components/product'));
 
 function Home() {
   return (
@@ -12,7 +15,7 @@ function Home() {
      <Link to='/'><img src='logo-no-background.svg' alt='logo'/></Link>
     </div>
     <div className="font-sans font-semibold leading-normal tracking-wide">
-     <Link to='/templates'><p>Templates</p></Link>
+     <Link to='/template'><p>Templates</p></Link>
     </div>
     <div className='font-sans font-semibold flex justify-between items-center space-x-5 leading-normal tracking-wide'>
      <Link to='/login'><p>Login</p></Link>
@@ -34,10 +37,14 @@ function Home() {
     </div>
 
     {/*Template carousel page*/}
-   <TemplateCarousel />
+    <Suspense fallback={<LoaderSpinner />}>
+        <TemplateCarousel />
+      </Suspense>
 
     {/*Product display page*/}
-    <Products />
+    <Suspense fallback={<LoaderSpinner />}>
+        <Products />
+      </Suspense>
 
     {/*Footer page*/}
     <Footer />
