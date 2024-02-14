@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import GoogleSignup from './googleSignup';
-//import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import api from './refreshMiddleware';
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
@@ -9,7 +9,7 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 function SignupPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-    //const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,7 +21,7 @@ function SignupPage() {
        toast.success(response.data.message);
       setUsername('');
       setPassword('');
-        //navigate('/dashboard');
+      navigate('/template');
     } catch (error: any) {
       if (error.response.status === 500) {
         toast.error('Something went wrong. Please try again later.');

@@ -8,7 +8,7 @@ function GoogleSignup () {
   const handleGoogleSignup = () => {
     setIsLoading(true);
     try {
-    // Redirect the user to your Google OAuth endpoint
+    // Redirect the user to the Google OAuth endpoint
     window.location.href = `${BACKEND_URL}/auth/google`;
     } catch (error: any) {
         console.error(error);

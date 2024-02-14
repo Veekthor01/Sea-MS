@@ -1,8 +1,10 @@
-import React from 'react'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { createBrowserRouter, createRoutesFromElements, Outlet, Route, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, createRoutesFromElements, Outlet, Route, RouterProvider} from "react-router-dom";
+import ErrorBoundary from './components/errorBoundary';
+import ErrorBoundary2 from './components/errorBoundary2';
+import LoaderSpinner from './components/loading';
 import Home from './pages/home';
 import Dashboard from './pages/dashboard';
 import Template from './pages/template';
@@ -29,10 +31,15 @@ const queryClient = new QueryClient();
 
  // Routes
 const routes = createRoutesFromElements(
-  <React.Fragment> {/* or use Route instead of React.Fragement which is also basically <> </> tags */}
+  <Route>
   <Route path="/" element={<Home />} />
-  <Route path="/dashboard" element={<Dashboard />} />
-  <Route path="/template" element={<Template />} />
+  //Catches errors that occures during rendering of the route.
+  <Route path="/dashboard" element={<Dashboard />} errorElement={<ErrorBoundary2 />} />
+  <Route path="/template" element={
+    <ErrorBoundary>
+      <Template />
+    </ErrorBoundary>//Catches errors anywhere in their child component tree and display a fallback UI.
+  } />
   <Route path="/blogtemplate" element={<BlogTemplate />} />
   <Route path="/portfoliotemplate" element={<PortfolioTemplate />} />
   <Route path="/resumetemplate" element={<ResumeTemplate />} />
@@ -51,7 +58,7 @@ const routes = createRoutesFromElements(
   <Route path="/signup" element={<SignupPage />} />
   <Route path="/login" element={<LoginPage />} />
   <Route path="/changepassword" element={<ChangePasswordForm />} />
-  </React.Fragment>
+  </Route>
 );
 
 function App() {
@@ -61,7 +68,8 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <RouterProvider 
       router={createBrowserRouter(routes)} 
-      fallbackElement={<div>Loading...</div>}>
+      fallbackElement={<LoaderSpinner />} 
+      >
       </RouterProvider>
       <ToastContainer />
       <Outlet />{/* used in parent route elements to render their child route elements.*/}
@@ -71,13 +79,3 @@ function App() {
 }
 
 export default App
-
-// Type declaration for RouterProvider
-/*declare function RouterProvider(
-  props: RouterProviderProps
- ): React.ReactElement;
- 
- interface RouterProviderProps {
-   router: Router;
-   fallbackElement?: React.ReactNode;
- } */

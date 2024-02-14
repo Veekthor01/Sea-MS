@@ -5,6 +5,7 @@ import api from './refreshMiddleware';
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
+// Middleware to check if the user is authenticated
 function CheckAuthenticated() {
     const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
@@ -30,7 +31,7 @@ function CheckAuthenticated() {
     }, [navigate]);
 
     if (isLoading) {
-        return <div>Loading...</div>;
+        return <div>...</div>;
     }
 
     return null;
