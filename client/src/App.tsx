@@ -33,7 +33,6 @@ const queryClient = new QueryClient();
 const routes = createRoutesFromElements(
   <Route>
   <Route path="/" element={<Home />} />
-  //Catches errors that occures during rendering of the route.
   <Route path="/dashboard" element={<Dashboard />} errorElement={<ErrorBoundary2 />} />
   <Route path="/template" element={
     <ErrorBoundary>
@@ -64,7 +63,7 @@ const routes = createRoutesFromElements(
 function App() {
 
   return (
-    <>
+    <div className='bg-zinc-100'>
     <QueryClientProvider client={queryClient}>
       <RouterProvider 
       router={createBrowserRouter(routes)} 
@@ -74,7 +73,7 @@ function App() {
       <ToastContainer />
       <Outlet />{/* used in parent route elements to render their child route elements.*/}
       </QueryClientProvider>
-    </>
+    </div>
   )
 }
 

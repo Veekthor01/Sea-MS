@@ -1,12 +1,12 @@
 function Products() {
     return (
-        <div className="bg-violet-800 p-8">
-          <h1 className="w-4/5 mx-auto mt-4 mb-3 font-sans text-4xl text-white font-bold text-center leading-snug tracking-wide">
+        <div className="p-8">
+          <h1 className="w-4/5 mx-auto mt-10 mb-3 font-sans text-4xl text-zinc-900 font-bold text-center leading-snug tracking-wide">
           Share and connect with others, showcase your work, and land your dream job
           </h1> 
             <div className="flex justify-between">
                 <div className="w-1/3">
-                    <div className="rounded-lg p-6 mb-4 text-white">
+                    <div className="rounded-lg p-6 mb-4 text-zinc-900">
                         <img src="/p.blog.webp" alt="Blog" className="w-full mb-4 rounded" />
                         <h1 className="text-xl font-sans font-bold mb-2 leading-normal tracking-wide">
                           Blog
@@ -17,7 +17,7 @@ function Products() {
                     </div>
                 </div>
                 <div className="w-1/3">
-                    <div className="rounded-lg p-6 mb-4 text-white">
+                    <div className="rounded-lg p-6 mb-4 text-zinc-900">
                         <img src="/p.portfolio.webp" alt="Portfolio" className="w-full mb-4 rounded" />
                         <h1 className="text-xl font-sans font-bold mb-2 leading-normal tracking-wide">
                           Portfolio
@@ -28,7 +28,7 @@ function Products() {
                     </div>
                 </div>
                 <div className="w-1/3">
-                    <div className="rounded-lg p-6 mb-4 text-white">
+                    <div className="rounded-lg p-6 mb-4 text-zinc-900">
                         <img src="/p.resume.webp" alt="Resume" className="w-full mb-4 rounded" />
                         <h1 className="text-xl font-sans font-bold mb-2 leading-normal tracking-wide">
                           Resume
