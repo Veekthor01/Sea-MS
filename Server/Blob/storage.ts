@@ -11,7 +11,7 @@ const googleCloudKey = process.env.GOOGLE_CLOUD_KEY;
 // Instantiate a storage client with credentials
 const storage = new Storage({ keyFilename: googleCloudKey });
 
-// upload file
+// function to upload a file to the storage and store the public URL in the database
 export async function uploadFileToStorage(req: any, res: any) {
     try {
         await processUpload(req, res);

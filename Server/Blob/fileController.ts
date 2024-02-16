@@ -8,6 +8,7 @@ const googleCloudKey = process.env.GOOGLE_CLOUD_KEY;
 // Instantiate a storage client with credentials
 const storage = new Storage({ keyFilename: googleCloudKey });
 
+// Get list of files/images from the storage
 const getListFiles = async (req: any, res: any) => {
     try {
         if (!googleCloudKey || !bucketName) {
@@ -29,6 +30,7 @@ const getListFiles = async (req: any, res: any) => {
     }
 };
 
+// Download a file from the storage
 const downloadFile = async (req: any, res: any) => {
     try {
         if (!googleCloudKey || !bucketName) {
@@ -45,6 +47,7 @@ const downloadFile = async (req: any, res: any) => {
     }
 }
 
+// Delete a file from the storage
 const deleteFileFromStorage = async (publicUrl: string) => {
     try {
         if (!googleCloudKey || !bucketName) {
