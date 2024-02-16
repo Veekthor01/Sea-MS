@@ -138,6 +138,22 @@ async function saveUserPortfolio(userPortfolio: PortfolioTemplate): Promise<Port
     }
 }
 
+//Function to get a user portfolio by userId
+async function getUserPortfolioByUserId(userId: string): Promise<PortfolioTemplate[] | null> {
+    try {
+        const db = await connectDB();
+        if (!db) {
+            throw new Error('Database not connected');
+        }
+        const userPortfolio: PortfolioTemplate[] | null = await db.collection('userPortfolio').find(
+            { userId: userId }).toArray() as PortfolioTemplate[] | null;
+        return userPortfolio;
+    } catch (err) {
+        console.log('Database Error', err);
+        throw err;
+    }
+}
+
 //Function to get a user portfolio by name
 async function getUserPortfolioByName(name: string): Promise<PortfolioTemplate | null> {
     try {
@@ -221,7 +237,6 @@ async function deleteUserPortfolio(_id: ObjectId): Promise<boolean> {
     }
 }
 
-
 export {
     createPortfolioTemplate,
     getAllPortfolioTemplates,
@@ -230,6 +245,7 @@ export {
     updatePortfolioTemplate,
     deletePortfolioTemplate,
     saveUserPortfolio,
+    getUserPortfolioByUserId,
     getUserPortfolioByName,
     getUserPortfolioById,
     getAllUserPortfolios,

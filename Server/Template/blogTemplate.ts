@@ -242,5 +242,4 @@ export {
     getAllUserBlogs,
     updateUserBlog,
     deleteUserBlog,
-    //storeImageInDB
 };
