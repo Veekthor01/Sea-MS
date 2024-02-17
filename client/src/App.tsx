@@ -63,7 +63,7 @@ const routes = createRoutesFromElements(
 function App() {
 
   return (
-    <div className='bg-zinc-100'>
+    <div className='bg-zinc-100 min-h-screen'>
     <QueryClientProvider client={queryClient}>
       <RouterProvider 
       router={createBrowserRouter(routes)} 
