@@ -179,7 +179,7 @@ function UserBlogTextEditor({ value, onChange }: TextEditorProps) {
 
     return (
         <div>
-        <h1 className='font-roboto font-semibold'> URL Name()</h1>
+        <h1 className='font-roboto font-semibold'> URL Name(this will be the url of your blog)</h1>
         <ReactQuill theme="snow"
         modules={modules}
         formats={formats}

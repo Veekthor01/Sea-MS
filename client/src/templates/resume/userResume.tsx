@@ -58,17 +58,21 @@ function UserResume () {
     return (
         <>
         <CheckAuthenticated />
-         <div className="space-y-4">
-        {userResume && userResume.map((resume: UserResume) => (
-           <Link to="/userresume" key={resume._id}>
-            <div key={resume._id} className="space-y-1 mb-5">
-            <div className='font-semibold font-roboto leading-normal tracking-wide'>{parser(resume.name)}</div>
-            <div className='font-medium font-roboto leading-normal tracking-wide'>{parser(resume.author)}</div>
-            <div className='font-medium font-roboto leading-normal tracking-wide'>{parser(resume.email)}</div>
-            <div className='font-medium font-roboto leading-normal tracking-wide'>{parser(resume.phone)}</div>
-            </div>
-            </Link>
-        ))}
+        <div className="space-y-4">
+            {userResume && userResume.length > 0 ? (
+                userResume.map((resume: UserResume) => (
+                    <Link to="/userresume" key={resume._id}>
+                        <div key={resume._id} className="space-y-1 mb-5">
+                            <div className='text-sm md:text-base font-semibold font-roboto leading-normal tracking-wide'>{parser(resume.name)}</div>
+                            <div className='text-sm md:text-base font-medium font-roboto leading-normal tracking-wide'>{parser(resume.author)}</div>
+                            <div className='text-sm md:text-base font-medium font-roboto leading-normal tracking-wide'>{parser(resume.email)}</div>
+                            <div className='text-sm md:text-base font-medium font-roboto leading-normal tracking-wide'>{parser(resume.phone)}</div>
+                        </div>
+                    </Link>
+                ))
+            ) : (
+                <p>Pick a template to start</p>
+            )}
         </div>
         </>
     );

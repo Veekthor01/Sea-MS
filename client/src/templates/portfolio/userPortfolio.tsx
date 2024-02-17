@@ -48,14 +48,18 @@ function UserPortfolio () {
         <>
         <CheckAuthenticated />
         <div className="space-y-4">
-        {userPortfolio && userPortfolio.map((portfolio: UserPortfolio) => (
-          <Link to='/userportfolio' key={portfolio._id}>
-            <div key={portfolio._id} className="space-y-2 mb-5">
-            <div className='font-semibold font-roboto leading-normal tracking-wide'>{parser(portfolio.name)}</div>
-            <div className='font-medium font-roboto leading-normal tracking-wide'>{parser(portfolio.about.slice(0, 200) + '...')}</div>
-            </div>
-          </Link>
-        ))}
+            {userPortfolio && userPortfolio.length > 0 ? (
+                userPortfolio.map((portfolio: UserPortfolio) => (
+                    <Link to='/userportfolio' key={portfolio._id}>
+                        <div key={portfolio._id} className="space-y-2 mb-5">
+                            <div className='text-sm md:text-base font-semibold font-roboto leading-normal tracking-wide'>{parser(portfolio.name)}</div>
+                            <div className='text-sm md:text-base font-medium font-roboto leading-normal tracking-wide'>{parser(portfolio.about.slice(0, 200) + '...')}</div>
+                        </div>
+                    </Link>
+                ))
+            ) : (
+                <p>Pick a template to start</p>
+            )}
         </div>
         </>
     );

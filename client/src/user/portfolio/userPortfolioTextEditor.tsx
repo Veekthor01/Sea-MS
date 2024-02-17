@@ -1,6 +1,7 @@
 import { useCallback, useRef, useMemo, useState, useEffect } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import { toast } from 'react-toastify';
 import axios from 'axios';
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
@@ -26,6 +27,7 @@ interface TextEditorProps {
     onChange: (userPortfolio: Partial<UserPortfolio>) => void;
 }
 
+// User Portfolio Text Editor
 function UserPortfolioTextEditor({ value, onChange }: TextEditorProps) {
     const quill = useRef<ReactQuill>(null);
     const [name, setName] = useState('');
@@ -109,9 +111,13 @@ function UserPortfolioTextEditor({ value, onChange }: TextEditorProps) {
                 quillEditor.deleteText(range.index, 1);
                 quillEditor.insertEmbed(range.index, "image", uploadedImageUrl, "user");
               } else {
-                console.error('Error uploading image:', response.data.message);
+                if (response.status === 500) {
+                    toast.error('Something went wrong. Please try again later.');
+                } else {
+                    toast.error(`Error uploading image: ${response.data.message}`);
+                }
                 quillEditor.deleteText(range.index, 1);
-              }
+            }
             }
           };
           reader.readAsDataURL(file);
@@ -175,7 +181,7 @@ function UserPortfolioTextEditor({ value, onChange }: TextEditorProps) {
 
     return (
         <div>
-        <h1 className='font-roboto font-semibold'> URL Name()</h1>
+        <h1 className='font-roboto font-semibold'> URL Name(this will be the url of your Portfolio)</h1>
       <ReactQuill
       theme="snow"
       ref={quill}

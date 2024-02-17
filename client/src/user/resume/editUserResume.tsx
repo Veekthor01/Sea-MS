@@ -1,9 +1,11 @@
-import { useEffect, useState } from 'react';
-//import axios from 'axios';
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { toast } from 'react-toastify';
 import { useParams } from 'react-router-dom';
 import UserResumeTextEditor from './userResumeTextEditor';
 import CheckAuthenticated from '../../auth/authMiddleware';
 import api from '../../auth/refreshMiddleware';
+import LoaderSpinner from '../../components/loading';
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -35,16 +37,28 @@ interface UserResume {
     skills: string[];
 }
 
+// Edit User Resume Page
 function EditUserResume() {
-    const [userResume, setUserResume] = useState<UserResume | null>(null);
+    const [, setUserResume] = useState<UserResume | null>(null);
     const { id } = useParams();
 
-    useEffect(() => {
-        // Fetch the existing user resume when the component is mounted
-        api.get(`${BACKEND_URL}/userResume/id/${id}`, { withCredentials: true })
-            .then(response => setUserResume(response.data))
-            .catch(error => console.error('Error fetching user resume:', error));
-    }, [id]);
+    const userResumeQuery = useQuery({
+        queryKey: ['userResume', id],
+        queryFn: async () => {
+            const response = await api.get(`${BACKEND_URL}/userResume/id/${id}`, { withCredentials: true });
+            const data = await response.data;
+            return data;
+        },
+    });
+
+    if (userResumeQuery.isLoading) return <LoaderSpinner />;
+    if (userResumeQuery.isError) {
+        toast.error('An error occurred. Please try again later.');
+        return;
+    }
+
+    // use data from the query
+    const userResume = userResumeQuery.data;
 
     const handleSave = async () => {
         if (!userResume) {

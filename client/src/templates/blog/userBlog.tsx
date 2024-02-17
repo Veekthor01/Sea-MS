@@ -41,18 +41,22 @@ function UserBlog () {
           <>
           <CheckAuthenticated />
           <div className="space-y-4">
-        {userBlog && userBlog.map((blog: UserBlog) => (
-          <Link to="/userblog" key={blog._id}>
-          <div key={blog._id} className="space-y-1 mb-5">
-            {/* Use html-react-parser to render content without <p> tags saved with by the RTE */}
-            <div className='font-semibold font-roboto leading-normal tracking-wide'>{parser(blog.name)}</div>
-            <div className='font-medium font-roboto leading-normal tracking-wide'>{parser(blog.title)}</div>
-            <div className='font-medium font-roboto leading-normal tracking-wide'>{parser(blog.author)}</div>
-            <div className='font-medium font-roboto leading-normal tracking-wide'>{parser(blog.createdAt?.toString() ?? '')}</div>
-          </div>
-          </Link>
-            ))}
-          </div>
+            {userBlog && userBlog.length > 0 ? (
+                userBlog.map((blog: UserBlog) => (
+                    <Link to="/userblog" key={blog._id}>
+                        <div key={blog._id} className="space-y-1 mb-5">
+                            {/* Use html-react-parser to render content without <p> tags saved with by the RTE */}
+                            <div className='text-sm md:text-base font-semibold text-zinc-900 font-roboto leading-normal tracking-wide'>{parser(blog.name)}</div>
+                            <div className='text-sm md:text-base font-medium text-zinc-900 font-roboto leading-normal tracking-wide'>{parser(blog.title)}</div>
+                            <div className='text-sm md:text-base font-medium text-zinc-900 font-roboto leading-normal tracking-wide'>{parser(blog.author)}</div>
+                            <div className='text-sm md:text-base font-medium text-zinc-900 font-roboto leading-normal tracking-wide'>{parser(blog.createdAt?.toString() ?? '')}</div>
+                        </div>
+                    </Link>
+                ))
+            ) : (
+                <p>Pick a template to start</p>
+            )}
+        </div>
           </>
     );
 }

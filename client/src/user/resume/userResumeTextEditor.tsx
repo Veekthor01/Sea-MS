@@ -35,6 +35,7 @@ interface TextEditorProps {
     onChange: (resume: Partial<UserResume>) => void;
 }
 
+// User Resume Text Editor
 function UserResumeTextEditor({ value, onChange }: TextEditorProps) {
     const quill = useRef<ReactQuill>(null);
     const [name, setName] = useState(value.name);
@@ -125,7 +126,7 @@ function UserResumeTextEditor({ value, onChange }: TextEditorProps) {
     return (
         <div>
 
-        <h1 className='font-roboto font-semibold'>URL Name()</h1>
+        <h1 className='font-roboto font-semibold'>URL Name(this will be the url of your resume)</h1>
         <ReactQuill theme="snow"
         modules={modules}
         formats={formats}

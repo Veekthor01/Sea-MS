@@ -1,9 +1,11 @@
-import { useEffect, useState } from 'react';
-//import axios from 'axios';
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { toast } from 'react-toastify';
 import { useParams } from 'react-router-dom';
 import UserPortfolioTextEditor from './userPortfolioTextEditor';
 import CheckAuthenticated from '../../auth/authMiddleware';
 import api from '../../auth/refreshMiddleware';
+import LoaderSpinner from '../../components/loading';
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -23,17 +25,28 @@ interface UserPortfolio {
     projects: Projects[];
 }
 
+// Edit User Portfolio Page
 function EditUserPortfolio() {
-    const [userPortfolio, setUserPortfolio] = useState<UserPortfolio | null>(null);
+    const [, setUserPortfolio] = useState<UserPortfolio | null>(null);
     const { id } = useParams();
 
-    useEffect(() => {
-        // Fetch the existing user portfolio when the component is mounted
-        api.get(`${BACKEND_URL}/userPortfolio/id/${id}`, { withCredentials: true })
-            .then(response => setUserPortfolio(response.data))
-            .catch(error => console.error('Error fetching user portfolio:', error));
+    const userPortfolioQuery = useQuery({
+        queryKey: ['userPortfolio', id],
+        queryFn: async () => {
+            const response = await api.get(`${BACKEND_URL}/userPortfolio/id/${id}`, { withCredentials: true });
+            const data = await response.data;
+            return data;
+        },
+    });
+
+    if (userPortfolioQuery.isLoading) return <LoaderSpinner />;
+    if (userPortfolioQuery.isError) {
+        toast.error('An error occurred. Please try again later.');
+        return;
     }
-    , [id]);
+
+    // use data from the query
+    const userPortfolio = userPortfolioQuery.data;
 
     const handleSave = async () => {
         if (!userPortfolio) {
@@ -80,7 +93,7 @@ function EditUserPortfolio() {
             <UserPortfolioTextEditor value={userPortfolio} onChange={handleUserPortfolioChange} />
           </>
         ) : (
-          <p>Loading...</p>
+          <p>Wait a minute...</p>
         )}
       </div>
     );
