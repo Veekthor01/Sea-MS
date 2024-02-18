@@ -1,7 +1,7 @@
 ## Sea-MS
 
 #### Sea-MS is a Content Management System (CMS) built with TypeScript, React(Vite), Express.js and MongoDB. 
-It allows users to create and manage blogs, portfolios, and resumes with ease. 
+#### It allows users to create and manage blogs, portfolios, and resumes with ease. 
 
 ### Features
 
