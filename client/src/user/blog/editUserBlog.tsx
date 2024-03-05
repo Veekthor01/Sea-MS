@@ -67,7 +67,6 @@ function EditUserBlog() {
 
     const handleUserBlogChange = (newValues: Partial<UserBlog>) => {
         if (userBlog) {
-            console.log('New Values:', newValues);
             setUserBlog({ ...userBlog, ...newValues });
         }
     };

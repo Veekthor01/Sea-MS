@@ -80,7 +80,6 @@ function EditPortfolioTemplate() {
 
     const handleTemplateChange = (newValues: Partial<PortfolioTemplate>) => {
         if (template) {
-            console.log('New Values:', newValues);
             setTemplate({ ...template, ...newValues });
         }
     };

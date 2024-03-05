@@ -73,7 +73,6 @@ function EditBlogTemplate() {
 
   const handleTemplateChange = (newValues: Partial<BlogTemplate>) => {
     if (template) {
-      console.log('New Values:', newValues);
       setTemplate({ ...template, ...newValues });
     }
   };

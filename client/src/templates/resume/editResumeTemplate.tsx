@@ -96,7 +96,6 @@ function EditResumeTemplate() {
 
     const handleTemplateChange = (newValues: Partial<ResumeTemplate>) => {
         if (template) {
-            console.log('New Values:', newValues);
             setTemplate({ ...template, ...newValues });
         }
     };

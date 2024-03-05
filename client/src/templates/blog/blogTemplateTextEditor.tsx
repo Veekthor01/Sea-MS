@@ -37,7 +37,6 @@ function BlogTemplateTextEditor({ value, onChange }: TextEditorProps) {
  const handleValueChange = (newValue: string) => {
   setEditorContent(newValue);
   const updatedValue = { ...value, content: newValue };
-  console.log('Updated Value:', updatedValue); // Log for debugging
   onChange(updatedValue);
 };
 const handleTitleChange = (newValue: string) => {

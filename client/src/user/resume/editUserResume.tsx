@@ -89,7 +89,6 @@ function EditUserResume() {
 
     const handleUserResumeChange = (newValues: Partial<UserResume>) => {
         if (userResume) {
-            console.log('New Values:', newValues);
             setUserResume({ ...userResume, ...newValues });
         }
     };

@@ -75,7 +75,6 @@ function EditUserPortfolio() {
 
     const handleUserPortfolioChange = (newValues: Partial<UserPortfolio>) => {
         if (userPortfolio) {
-            console.log('New Values:', newValues);
             setUserPortfolio({ ...userPortfolio, ...newValues });
         }
     };
