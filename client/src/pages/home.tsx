@@ -10,28 +10,28 @@ function Home() {
   return (
     <>
     {/*Header*/}
-    <div className= 'flex justify-between items-center m-3 p-3'>
-    <div className = 'w-44'>
+    <div className='flex justify-between items-center mx-2 md:mx-3 mb-3 p-2 md:p-3'>
+    <div className='w-28 md:w-44'>
      <Link to='/'><img src='logo-no-background.svg' alt='logo'/></Link>
     </div>
-    <div className="font-sans font-semibold leading-normal tracking-wide">
+    <div className="hidden sm:block font-sans text-sm md:text-base text-zinc-900 font-semibold leading-normal tracking-wide hover:text-zinc-700">
      <Link to='/template'><p>Templates</p></Link>
     </div>
-    <div className='font-sans font-semibold flex justify-between items-center space-x-5 leading-normal tracking-wide'>
+    <div className='font-sans text-sm md:text-base text-zinc-900 font-semibold flex justify-between items-center space-x-5 leading-normal tracking-wide hover:text-zinc-800'>
      <Link to='/login'><p>Login</p></Link>
-     <Link to='/signup'><button className="bg-black text-white px-4 py-2 rounded">Get Started</button></Link>
+     <Link to='/signup'><button className="bg-zinc-900 text-zinc-100 px-2 py-1 md:px-4 md:py-2 rounded hover:bg-zinc-700">Get Started</button></Link>
     </div>
     </div>
 
     {/*Hero*/}
-    <div className ='text-center mt-12 p-4 space-y-8 bg-black text-white'>
-        <h1 className="w-9/12 mx-auto font-sans font-bold text-7xl leading-normal tracking-wide">
-          Unleash Sea-mless Creativity
+    <div className ='text-center mt-6 md:mt-12 p-4 py-5 md:py-10 space-y-4 md:space-y-8 text-zinc-900'>
+        <h1 className="w-11/12 md:w-3/5 lg:w-9/12 mx-auto font-sans font-bold text-[50px] md:text-[70px] lg:text-[82px] leading-normal tracking-wide">
+        Unleash <span className="bg-clip-text text-transparent bg-gradient-to-r from-gray-500 to-gray-900">Sea</span>-mless Creativity
           </h1>
-        <p className="font-roboto text-2xl leading-tight tracking-wide">
+        <p className="font-roboto text-lg md:text-2xl leading-tight tracking-wide">
           Build your platform with ease.
           </p>
-        <div className="inline-block bg-white text-black text-lg px-6 py-3 font-sans font-semibold space-y-4 rounded leading-normal tracking-wide">
+        <div className="inline-block bg-zinc-900 text-zinc-100 text-base md:text-lg px-4 md:px-6 py-2 md:py-3 font-sans font-semibold space-y-4 rounded leading-normal tracking-wide hover:bg-zinc-800 cursor-pointer">
         <Link to='/signup'><p>Get Started</p></Link>
     </div>
     </div>
@@ -53,64 +53,3 @@ function Home() {
 }
  
 export default Home;
-
-/* import { useState, useEffect } from 'react';
-<div className = 'mt-3 p-4 bg-gray-700'>
-    <h1>Brands that trust Sea-MS</h1>
-    </div>
-const images = [
-    'blog 2.webp',
-    'blog.webp',
-    'portfolio-2.webp',
-    'portfolio.webp',
-    'resume.webp',
-]
-
-function TemplateCarousel() {
-    const [activeIndex, setActiveIndex] = useState(0);
-  const nextSlide = () => {
-    setActiveIndex((prevIndex) =>
-      prevIndex === images.length - 1 ? 0 : prevIndex + 1
-    );
-  };
-  const prevSlide = () => {
-    setActiveIndex((prevIndex) =>
-      prevIndex === 0 ? images.length - 1 : prevIndex - 1
-    );
-  };
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setActiveIndex((prevIndex) =>
-                prevIndex === images.length - 1 ? 0 : prevIndex + 1
-            );
-        }, 5000);
-        return () => clearInterval(interval);
-    }, []);
- 
-    return (
-        <div className="relative w-4/5 mx-auto">
-        <div className="absolute inset-0 flex items-center justify-center">
-            <img
-            src={images[activeIndex]}
-            alt="template"
-            className="h-96 w-96 object-cover rounded-lg"
-            />
-        </div>
-        <button
-            onClick={prevSlide}
-            className="absolute top-1/2 left-0 transform -translate-y-1/2 bg-black bg-opacity-50 text-white px-3 py-2 rounded-l-lg"
-        >
-            Prev
-        </button>
-        <button
-            onClick={nextSlide}
-            className="absolute top-1/2 right-0 transform -translate-y-1/2 bg-black bg-opacity-50 text-white px-3 py-2 rounded-r-lg"
-        >
-            Next
-        </button>
-        </div>
-    );
-}
-
-export default TemplateCarousel;*/

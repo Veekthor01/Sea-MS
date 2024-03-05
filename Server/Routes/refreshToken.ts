@@ -6,8 +6,9 @@ dotenv.config();
 
 const router = express.Router();
 
+// Route to refresh the JWT
 router.post('/', async (req, res) => {
-    const { refreshToken }: { refreshToken: string } = req.body;
+  const refreshToken = req.cookies.refreshToken;
     if (!refreshToken) {
       return res.status(401).json({ message: 'Refresh Token not found, authorization denied' });
     }
@@ -17,13 +18,9 @@ router.post('/', async (req, res) => {
         return res.status(403).json({ message: 'Invalid refresh token' });
     }
   
-    const accessToken = jwt.sign({ _id: userId }, process.env.JWT_SECRET as string, { expiresIn: '1h' });
-    res.json({ accessToken });
+    const token = jwt.sign({ _id: userId }, process.env.JWT_SECRET as string, { expiresIn: '1h' });
+    res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'strict', maxAge: 3600000 });
+    res.json({ token });
   });
 
 export default router;
-
-/* when making frontend, replace return res.status(401).json({ message: 'Refresh Token not found, authorization denied' });
-with just return res.sendStatus(401)
-and  return res.sendStatus(403)
-*/

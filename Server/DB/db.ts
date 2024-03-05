@@ -23,4 +23,4 @@ async function connectDB(): Promise<Db | null> {
     }
 }
 
-export default connectDB ;
+export default connectDB;

@@ -1,6 +1,5 @@
 import express from 'express';
 import { ObjectId } from 'mongodb';
-import Redis from 'ioredis';
 import { format } from 'date-fns';
 import { createBlogTemplate, getBlogTemplateByName, getAllBlogTemplates, getBlogTemplateById, updateBlogTemplate, deleteBlogTemplate } from '../Template/blogTemplate';
 import authenticateJWT from '../Passport-Config/auth';
@@ -8,11 +7,6 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const router = express.Router();
-const redis = new Redis({
-    host: process.env.REDIS_URL_ENDPOINT,
-    port: Number(process.env.REDIS_PORT),
-    password: process.env.REDIS_PASSWORD
-});
 
 // Route to create a blog template
 router.post('/', authenticateJWT, async (req, res) => {
@@ -24,22 +18,10 @@ router.post('/', authenticateJWT, async (req, res) => {
     }
 });
 
-//Route to get all blog templates
+// Route to get all blog templates
 router.get('/', authenticateJWT, async (req, res) => {
-    const cacheKey = 'blogTemplates';
-     // fetch the result from cache
-        const cacheResult = await redis.get(cacheKey);
-    // If the result is in the cache, return it
-        if (cacheResult) {
-            console.log('Cache hit');
-            return res.status(200).json(JSON.parse(cacheResult));
-        }
-
     try {
         const blogTemplates = await getAllBlogTemplates();
-        // Save the API response in the cache
-        await redis.set(cacheKey, JSON.stringify(blogTemplates), 'EX', 3600);
-        console.log('Cache miss');
         res.status(200).json(blogTemplates);
     } catch (err) {
         res.status(500).json({ message: 'Failed to retrieve blog templates' });
@@ -109,3 +91,32 @@ router.delete('/:id', authenticateJWT, async (req, res) => {
 });
 
 export default router;
+//import Redis from 'ioredis';
+
+/*const redis = new Redis({
+    host: process.env.REDIS_URL_ENDPOINT,
+    port: Number(process.env.REDIS_PORT),
+    password: process.env.REDIS_PASSWORD
+}); */
+
+/*Route to get all blog templates with redis
+router.get('/', authenticateJWT, async (req, res) => {
+    const cacheKey = 'blogTemplates';
+     // fetch the result from cache
+        const cacheResult = await redis.get(cacheKey);
+    // If the result is in the cache, return it
+        if (cacheResult) {
+            console.log('Cache hit');
+            return res.status(200).json(JSON.parse(cacheResult));
+        }
+
+    try {
+        const blogTemplates = await getAllBlogTemplates();
+        // Save the API response in the cache
+        await redis.set(cacheKey, JSON.stringify(blogTemplates), 'EX', 3600);
+        console.log('Cache miss');
+        res.status(200).json(blogTemplates);
+    } catch (err) {
+        res.status(500).json({ message: 'Failed to retrieve blog templates' });
+    }
+}); */

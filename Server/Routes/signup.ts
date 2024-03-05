@@ -9,7 +9,7 @@ dotenv.config();
 
 const router = express.Router();
 
-// POST /signup
+// Route to signup the user
 router.post('/', async (req, res) => {
     const { username, password }: { username: string, password: string } = req.body;
     try {
@@ -38,12 +38,11 @@ router.post('/', async (req, res) => {
         if (user._id) {
             await storeRefreshToken(refreshToken, user._id.toString());
         } else {
-            // Handle the case where user._id is undefined
             console.error('User ID is undefined');
         }
         // Set the JWT and refresh token in HTTP-only cookies 
-        res.cookie('token', token, { httpOnly: true, secure: false, sameSite: 'lax', maxAge: 3600000 });//secure: true, sameSite: 'strict' in production
-      res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: false, sameSite: 'lax', maxAge: 2592000000 });//secure: true, sameSite: 'strict' in production
+        res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'strict', maxAge: 3600000 });
+      res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, sameSite: 'strict', maxAge: 2592000000 });
         return res.status(200).json({ message: 'Signup Successful' });
     } catch (err) {
         console.error('Internal server error', err);

@@ -8,7 +8,7 @@ dotenv.config();
 
 const router = express.Router();
 
-// POST /login
+// Route to login the user
 router.post('/', async (req, res) => {
     const { username, password }: { username: string, password: string } = req.body;
     try {
@@ -33,10 +33,11 @@ router.post('/', async (req, res) => {
       if (user._id) {
           await storeRefreshToken(refreshToken, user._id.toString());
       } else {
-          // Handle the case where user._id is undefined
           console.error('User ID is undefined');
       }
-      return res.status(200).json({ message: 'Login Successful', token, refreshToken });
+      // Set the JWT and refresh token in HTTP-only cookies
+      res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'strict', maxAge: 3600000 });
+      res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, sameSite: 'strict', maxAge: 2592000000 });
     } catch (err) {
         console.log('Error in POST /login', err);
         return res.status(500).json({ message: 'Internal server error' });
