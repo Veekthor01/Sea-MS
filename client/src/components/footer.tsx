@@ -13,13 +13,13 @@ function Footer() {
                      </p>
             </div>
             <div className="flex justify-center md:justify-end space-x-4 text-sm md:text-base mt-3 md:mt-0">
-                <a href="https://www.twitter.com/yourusername" target="_blank" rel="noopener noreferrer">
+                <a href="https://twitter.com/Veekthor01" target="_blank" rel="noopener noreferrer">
                     <FaTwitter />
                 </a>
-                <a href="https://www.instagram.com/yourusername" target="_blank" rel="noopener noreferrer">
+                <a href="https://github.com/Veekthor01" target="_blank" rel="noopener noreferrer">
                     <FaGithub />
                 </a>
-                <a href="https://www.linkedin.com/in/yourusername" target="_blank" rel="noopener noreferrer">
+                <a href="https://www.linkedin.com/in/miracle-adebiyi-a24a5425a/" target="_blank" rel="noopener noreferrer">
                     <FaLinkedinIn />
                 </a>
             </div>
